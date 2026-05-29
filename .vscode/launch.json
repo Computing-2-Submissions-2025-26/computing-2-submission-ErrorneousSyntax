@@ -28,11 +28,11 @@
                 "<node_internals>/**"
             ],
             // You'll need to change this line below to point to your module.
-            "program": "${workspaceFolder}/web-app/Module.js"
+            "program": "${workspaceFolder}/web-app/battleship.js"
         },
         {
             "name": "Generate Docs",
-            "command": "jsdoc -c jsdoc.json; exit",
+            "command": "npx jsdoc -c jsdoc.json",
             "request": "launch",
             "type": "node-terminal"
         }

@@ -1,9 +1,62 @@
-<!-- In HTML Comments are written like this -->
-<!-- They can all be removed for your apps -->
-<!doctype html> <!-- This first line tells browsers to expect modern standard html 5 -->
-<html lang="en-gb"> <!-- This is indicates the page is written in British English, useful for accessibility -->
-<meta charset="utf-8"> <!-- This indicates how the file is encoded. utf-8 is standard -->
-<title>Your Web-app Title</title> <!-- All pages need a title, this will be displayed in the browser's title bar -->
-<link rel="stylesheet" href="default.css"> <!-- Import style sheet – default.css -->
-<link rel="icon" href="./assets/favicon.png"> <!-- Import 'Favorites Icon' – favicon.png -->
-<script type="module" src="main.js"></script> <!-- Load the main script. Must be type="module". Have only one of these -->
+<!DOCTYPE html>
+<html>
+    <head>
+    <title>Naval Command</title>
+    <link rel="stylesheet" href="index.css">
+    </head>
+<body>
+
+<header>
+  <div class="logo">
+    <img src="logo.png" alt="anchor">
+    <span>NAVAL COMMAND</span> 
+  </div>
+  <button id="exit-btn" onclick="showScreen('start')">Exit to Menu</button>
+</header>
+
+<section id="start" class="screen active">
+  <div class="start-buttons">
+    <button class="start-button" onclick="showScreen('setup')">Play Against Human</button>
+    <button class="start-button" onclick="showScreen('setup')">Play Against Hunt / Target FSM</button>
+    <button class="start-button" onclick="showScreen('setup')">Play Against Probability Density Map</button>
+  </div>
+</section>
+
+<section id="setup" class="screen">
+  <h1>SETUP</h1>
+
+  <div class="setup-layout">
+    <div class="setup-board">
+      <div class="grid"></div>
+      <div class="dock">Ships go here</div>
+    </div>
+
+    <div class="panel setup-panel">Fleet info</div>
+  </div>
+
+  <button class="ready-button" onclick="showScreen('play')">Ready</button>
+</section>
+e
+<section id="play" class="screen">
+  <div class="battle-layout">
+    <div>
+      <h1 class="red">FIRING</h1>
+      <div class="grid"></div>
+    </div>
+
+    <div class="panel">
+      <h1>ROUND 1</h1>
+      <p>Friendly Fleet</p>
+      <p>Opposition Fleet</p>
+    </div>
+
+    <div>
+      <h1>DEFENDING</h1>
+      <div class="grid"></div>
+    </div>
+  </div>
+</section>
+
+<script src="main.js"></script>
+</body>
+</html>
