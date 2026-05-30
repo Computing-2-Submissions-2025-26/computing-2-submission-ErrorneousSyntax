@@ -174,11 +174,123 @@ const rotateBtn = document.getElementById("rotate-btn");
 const startBtn = document.getElementById("start-btn");
 const restartBtn = document.getElementById("restart-btn");
 
-//-------------------- INITIAL RENDER --------------------
-function renderBoard(container, board, mode){
-    container.innerHTML= ""
 
-    for (let row = 0; row < Battleship.BOARD_SIZE,row++){
-        for (let col=0; col < Battleship.BOARD_SIZE, col++)
+
+//-------------------- EVENT HANDLER FUNCTION --------------------
+
+/*
+Update board (backend) with input placement by player 
+*/
+function handleSetupClick(row,col){
+    if (state.phase !== Battleship.PHASE.SETUP){
+        return
+    }
+
+    const selectedShip = state.playerFleet[selectedShipIndex]
+    const result = Battleship.placeShip(
+        state.playerBoard, 
+        selectedShip, 
+        { row: row, col: col }, 
+        orientation)
+
+    if (result === null){
+        return
+    }
+
+    state.playerBoard=result.board
+    state.playerFleet[selectedShip] = result.ship
+    selectedShipIndex+=1
+
+    render()
+}
+
+function handleRotateClick(){
+    // if orientation is horizontal
+    if (orientation === Battleship.ORIENTATION.HORIZONTAL){
+        orientation = Battleship.ORIENTATION.VERTICAL
+    } else{
+        orientation = Battleship.ORIENTATION.HORIZONTAL
+    }
+    render()
+}
+
+function handleKeyDown(event){
+    if (event.key === "r" || event.key === "R") {
+        handleRotateClick();
     }
 }
+
+function handleRandomPlaceClick(){
+    const result = Battleship.placeFleetRandomly(
+        Battleship.createEmptyBoard(),
+        Battleship.createInitialFleet())
+
+    state.playerBoard = result.board
+    state.playerFleet = result.placeFleetRandomly
+    selectedShipIndex = state.playerFleet.length
+
+    render()
+}
+
+function handleStartClick(){
+    if (selectedShipIndex<state.playerFleet.length){
+        return
+    }
+
+    state = Battleship.startGame(state)
+
+    render()
+}
+
+function handleRestartClick(){
+    state = Battleship.createInitialGameState()
+    state.phase = Battleship.PHASE.SETUP
+
+    selectedShipIndex = 0
+    orientation = Battleship.ORIENTATION.HORIZONTAL
+    render()
+}
+
+
+
+//-------------------- INITIAL RENDER --------------------
+
+function renderBoard(container, board, mode) {
+    container.innerHTML = "" // Clear the board
+
+    for (let row=0; row<Battleship.BOARD_SIZE; row++){
+        for (let col=0; col<Battleship.BOARD_SIZE; col++){
+            const cell = document.createElement("button") //button element (HTML)
+            cell.classList.add("cell") // Adding "cell" to the element class
+            const property = board[row,col] // The property of that cell, e.g. "ship", "miss", "empty"
+            cell.classList.add(property) // Adding the specific cell type class eg. "cell ship"
+            cell.dataset.row = row // Adds button data, shows up as data-row = "3", data-col="5" ex.
+            cell.dataset.col = col // Retrieve using (cell.dataset.row)
+
+            cell.addEventListener("click", function(){
+                const row = cell.dataset.row
+                const col = cell.dataset.col
+
+                handleSetupClick(row,col)
+            })
+
+
+            container.appendChild(cell) // Add to above container
+        }
+    }
+
+      // 8. Add click listener.
+      //    If mode is "setup", call handleSetupClick(row, col).
+      //    If mode is "shoot", call handlePlayerShotClick(row, col).
+      //    If mode is "none", do nothing.
+
+      // 9. Append cell to container.
+}
+
+
+
+
+/*
+    Redraws the visible game every time state changes
+    Reads state --> Updates BOM
+*/
