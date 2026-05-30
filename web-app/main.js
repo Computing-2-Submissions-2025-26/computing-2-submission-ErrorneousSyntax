@@ -176,7 +176,7 @@ const restartBtn = document.getElementById("restart-btn");
 
 
 
-//-------------------- EVENT HANDLER FUNCTION --------------------
+//-------------------- INPUT HANDLER FUNCTION --------------------
 
 /*
 Update board (backend) with input placement by player 
@@ -198,7 +198,7 @@ function handleSetupClick(row,col){
     }
 
     state.playerBoard=result.board
-    state.playerFleet[selectedShip] = result.ship
+    state.playerFleet[selectedShipIndex] = result.ship
     selectedShipIndex+=1
 
     render()
@@ -226,7 +226,7 @@ function handleRandomPlaceClick(){
         Battleship.createInitialFleet())
 
     state.playerBoard = result.board
-    state.playerFleet = result.placeFleetRandomly
+    state.playerFleet = result.fleet
     selectedShipIndex = state.playerFleet.length
 
     render()
@@ -251,40 +251,52 @@ function handleRestartClick(){
     render()
 }
 
+function handlePlayerShot(row, col){
+  // Only allow during PLAYING phase
+    if (state.phase !== Battleship.PHASE.PLAYING || state.turn !== "player"){
+        return
+    }
+    
+    state = Battleship.handlePlayerShot(state, { row: row, col: col });    state=result
+    if (state.phase===Battleship.PHASE.GAME_OVER){
+        render()
+        return
+    }
+
+    state = Battleship.handleComputerTurn(state)
+    render()
+}
+
 
 
 //-------------------- INITIAL RENDER --------------------
 
 function renderBoard(container, board, mode) {
-    container.innerHTML = "" // Clear the board
+    container.innerHTML = "";
 
-    for (let row=0; row<Battleship.BOARD_SIZE; row++){
-        for (let col=0; col<Battleship.BOARD_SIZE; col++){
-            const cell = document.createElement("button") //button element (HTML)
-            cell.classList.add("cell") // Adding "cell" to the element class
-            const property = board[row,col] // The property of that cell, e.g. "ship", "miss", "empty"
-            cell.classList.add(property) // Adding the specific cell type class eg. "cell ship"
-            cell.dataset.row = row // Adds button data, shows up as data-row = "3", data-col="5" ex.
-            cell.dataset.col = col // Retrieve using (cell.dataset.row)
+    for (let row = 0; row < Battleship.BOARD_SIZE; row++) {
+        for (let col = 0; col < Battleship.BOARD_SIZE; col++) {
+            const cell = document.createElement("button");
 
-            cell.addEventListener("click", function(){
-                const row = cell.dataset.row
-                const col = cell.dataset.col
+            cell.classList.add("cell");
 
-                handleSetupClick(row,col)
-            })
+            const property = board[row][col];
+            cell.classList.add(property);
 
+            cell.dataset.row = row;
+            cell.dataset.col = col;
 
-            container.appendChild(cell) // Add to above container
+            cell.addEventListener("click", function () {
+                if (mode === "setup") {
+                    handleSetupClick(row, col);
+                } else if (mode === "shoot") {
+                    handlePlayerShot(row, col);
+                }
+            });
+
+            container.appendChild(cell);
         }
     }
-
-      // 8. Add click listener.
-      //    If mode is "setup", call handleSetupClick(row, col).
-      //    If mode is "shoot", call handlePlayerShotClick(row, col).
-      //    If mode is "none", do nothing.
-
-      // 9. Append cell to container.
 }
 
 
