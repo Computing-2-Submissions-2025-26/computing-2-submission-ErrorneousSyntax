@@ -750,3 +750,4 @@ Battleship.chooseRandomShot = function(shotsBoard){
 
 
 // export functions needed by main.js / UI layer
+export default Battleship;

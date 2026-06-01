@@ -300,3 +300,34 @@ h1 {
     padding-top: 0;
   }
 }
+
+.cell {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #333;
+  background: #ddd;
+}
+
+.cell.empty {
+  background: #ddd;
+}
+
+.cell.ship {
+  background: var(--navy);
+}
+
+.cell.miss {
+  background: white;
+}
+
+.cell.hit {
+  background: red;
+}
+
+.cell.sunk {
+  background: black;
+}
+
+.cell.preview{
+  background:#3b6ea1;
+}

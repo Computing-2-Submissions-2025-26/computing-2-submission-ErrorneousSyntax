@@ -276,6 +276,8 @@ function renderBoard(container, board, mode) {
 
     for (let row = 0; row < Battleship.BOARD_SIZE; row++) {
         for (let col = 0; col < Battleship.BOARD_SIZE; col++) {
+
+            // CELL CREATION --> VERY KEYYYYY 
             const cell = document.createElement("button");
 
             cell.classList.add("cell");
@@ -293,7 +295,18 @@ function renderBoard(container, board, mode) {
                     handlePlayerShot(row, col);
                 }
             });
-
+            cell.addEventListener("mouseenter", function(){
+                if (mode !== "setup"){ // ignore if not in setup
+                    return
+                }
+                previewShip(row, col)
+            }) // Find other arguments other than "mouseenter" if needed in the future from https://developer.mozilla.org/en-US/docs/Web/API/Element#mouse_events
+            cell.addEventListener("mouseleave", function(){
+                if (mode !== "setup"){ // ignore if not in setup
+                    return
+                }
+                clearPreview()
+            })
             container.appendChild(cell);
         }
     }
@@ -356,15 +369,32 @@ function render() {
     }
 }
 
+//Functions for visualising placement:
+function previewShip(row,col){
+    const ship = state.playerFleet[selectedShipIndex] //remember selectedshipindex is a global variabel
+    if (!ship){ // ignore if all ships placed
+        return 
+    }
+    const cells = Battleship.getShipCells({row:row,col:col},ship,orientation)//orientation also global variable
+    // for (let boardRow=0;boardRow<Battleship.BOARD_SIZE;boardRow++){
+    //     for (let boardCol=0;boardCol<Battleship.BOARD_SIZE;boardCol++){
+    //         if (boardRow === state.playerBoard[cells.row] && boardCol === state.playerBoard(cells.col)){
+    //             cell
+    //         }
+    //     }
+    // }
+    
+}
+
+
 
 //-------------------- EVENT LISTENERS --------------------
-
+document.addEventListener("keydown", handleKeyDown); // Accessibility -> for keyboard clicks
 rotateBtn.addEventListener("click", handleRotateClick);
 randomPlaceBtn.addEventListener("click", handleRandomPlaceClick);
 startBtn.addEventListener("click", handleStartClick);
 restartBtn.addEventListener("click", handleRestartClick);
 
-document.addEventListener("keydown", handleKeyDown);
 
 
 //-------------------- START GAME UI --------------------
