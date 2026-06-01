@@ -1,62 +1,46 @@
 <!DOCTYPE html>
 <html>
-    <head>
-    <title>Naval Command</title>
-    <link rel="stylesheet" href="index.css">
-    </head>
+<head>
+  <title>Naval Command</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+
 <body>
-
-<header>
-  <div class="logo">
-    <img src="logo.png" alt="anchor">
-    <span>NAVAL COMMAND</span> 
-  </div>
-  <button id="exit-btn" onclick="showScreen('start')">Exit to Menu</button>
-</header>
-
-<section id="start" class="screen active">
-  <div class="start-buttons">
-    <button class="start-button" onclick="showScreen('setup')">Play Against Human</button>
-    <button class="start-button" onclick="showScreen('setup')">Play Against Hunt / Target FSM</button>
-    <button class="start-button" onclick="showScreen('setup')">Play Against Probability Density Map</button>
-  </div>
-</section>
-
-<section id="setup" class="screen">
-  <h1>SETUP</h1>
-
-  <div class="setup-layout">
-    <div class="setup-board">
-      <div class="grid"></div>
-      <div class="dock">Ships go here</div>
+  <header>
+    <div class="logo">
+      <img src="logo.png" alt="anchor">
+      <span>NAVAL COMMAND</span>
     </div>
 
-    <div class="panel setup-panel">Fleet info</div>
-  </div>
+    <button id="restart-btn">Restart</button>
+  </header>
 
-  <button class="ready-button" onclick="showScreen('play')">Ready</button>
-</section>
-e
-<section id="play" class="screen">
-  <div class="battle-layout">
-    <div>
-      <h1 class="red">FIRING</h1>
-      <div class="grid"></div>
-    </div>
+  <main>
+    <section id="setup" class="screen active">
+      <h1>SETUP</h1>
 
-    <div class="panel">
-      <h1>ROUND 1</h1>
-      <p>Friendly Fleet</p>
-      <p>Opposition Fleet</p>
-    </div>
+      <p id="status">Place your fleet to begin.</p>
 
-    <div>
-      <h1>DEFENDING</h1>
-      <div class="grid"></div>
-    </div>
-  </div>
-</section>
+      <div class="controls">
+        <button id="random-place-btn">Random Place</button>
+        <button id="rotate-btn">Rotate</button>
+        <button id="start-btn">Start Game</button>
+      </div>
 
-<script src="main.js"></script>
+      <div class="battle-layout">
+        <div>
+          <h2>YOUR BOARD</h2>
+          <div id="player-board" class="grid"></div>
+        </div>
+
+        <div>
+          <h2>ENEMY BOARD</h2>
+          <div id="computer-board" class="grid"></div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script type="module" src="main.js"></script>
 </body>
 </html>

@@ -257,7 +257,7 @@ function handlePlayerShot(row, col){
         return
     }
     
-    state = Battleship.handlePlayerShot(state, { row: row, col: col });    state=result
+    state = Battleship.handlePlayerShot(state, { row: row, col: col });  
     if (state.phase===Battleship.PHASE.GAME_OVER){
         render()
         return
@@ -299,10 +299,75 @@ function renderBoard(container, board, mode) {
     }
 }
 
-
-
-
 /*
     Redraws the visible game every time state changes
     Reads state --> Updates BOM
 */
+function render() {
+    let playerMode;
+    let computerMode;
+
+    if (state.phase === Battleship.PHASE.SETUP) {
+        playerMode = "setup";
+    } else {
+        playerMode = "none";
+    }
+
+    if (
+        state.phase === Battleship.PHASE.PLAYING &&
+        state.turn === "player"
+    ) {
+        computerMode = "shoot"; // What the clicks on the comptuer board does
+    } else {
+        computerMode = "none";
+    }
+
+    renderBoard(playerBoardEl, state.playerBoard, playerMode);
+    renderBoard(computerBoardEl, state.playerShots, computerMode);
+
+    if (state.phase === Battleship.PHASE.MENU) {
+        statusEl.textContent = "Place your fleet to begin.";
+    } 
+    else if (state.phase === Battleship.PHASE.SETUP) {
+        const ship = state.playerFleet[selectedShipIndex];
+
+        if (ship) {
+            statusEl.textContent = `Place ${ship.name} (${ship.length}) - ${orientation}`;
+        } 
+        else {
+            statusEl.textContent = "All ships placed. Start game.";
+        }
+    } 
+    else if (state.phase === Battleship.PHASE.PLAYING) {
+        if (state.turn === "player") {
+            statusEl.textContent = "Your turn.";
+        } 
+        else {
+            statusEl.textContent = "Computer turn.";
+        }
+    } 
+    else if (state.phase === Battleship.PHASE.GAME_OVER) {
+        if (state.winner === "player") {
+            statusEl.textContent = "You win.";
+        } 
+        else {
+            statusEl.textContent = "Computer wins.";
+        }
+    }
+}
+
+
+//-------------------- EVENT LISTENERS --------------------
+
+rotateBtn.addEventListener("click", handleRotateClick);
+randomPlaceBtn.addEventListener("click", handleRandomPlaceClick);
+startBtn.addEventListener("click", handleStartClick);
+restartBtn.addEventListener("click", handleRestartClick);
+
+document.addEventListener("keydown", handleKeyDown);
+
+
+//-------------------- START GAME UI --------------------
+
+state.phase = Battleship.PHASE.SETUP;
+render();
