@@ -375,6 +375,9 @@ function previewShip(row,col){
     if (!ship){ // ignore if all ships placed
         return 
     }
+    if (Battleship.canPlaceShip(state.playerBoard,state.playerFleet[selectedShipIndex],row,col,orientation)){
+
+    }
     const cells = Battleship.getShipCells({row:row,col:col},ship,orientation)//orientation also global variable
     // for (let boardRow=0;boardRow<Battleship.BOARD_SIZE;boardRow++){
     //     for (let boardCol=0;boardCol<Battleship.BOARD_SIZE;boardCol++){
@@ -383,9 +386,23 @@ function previewShip(row,col){
     //         }
     //     }
     // }
-    
+    for (const cell of cells) {
+        const selector = `[data-row="${cell.row}"][data-col="${cell.col}"]`;
+        const cellEl = playerBoardEl.querySelector(selector);
+
+        if (cellEl) {
+            cellEl.classList.add("preview");
+        }
+    }
 }
 
+function clearPreview() {
+    const previewCells = document.querySelectorAll(".preview");
+
+    for (const cell of previewCells) {
+        cell.classList.remove("preview");
+    }
+}
 
 
 //-------------------- EVENT LISTENERS --------------------
