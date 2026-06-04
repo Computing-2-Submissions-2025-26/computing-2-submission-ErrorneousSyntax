@@ -335,7 +335,7 @@ function render() {
         computerMode = "none";
     }
 
-    renderBoard(playerBoardEl, state.playerBoard, playerMode);
+    renderBoard(playerBoardEl, state.computerShots, playerMode);
     renderBoard(computerBoardEl, state.playerShots, computerMode);
 
     if (state.phase === Battleship.PHASE.MENU) {
@@ -388,7 +388,7 @@ function previewShip(row,col){
     // }
     for (const cell of cells) {
         const selector = `[data-row="${cell.row}"][data-col="${cell.col}"]`;
-        const cellEl = playerBoardEl.querySelector(selector);
+        const cellEl = playerBoardEl.querySelector(selector); //querySelector finds the first DOM with the required criteria
 
         if (cellEl) {
             cellEl.classList.add("preview");
@@ -403,6 +403,7 @@ function clearPreview() {
         cell.classList.remove("preview");
     }
 }
+
 
 
 //-------------------- EVENT LISTENERS --------------------
