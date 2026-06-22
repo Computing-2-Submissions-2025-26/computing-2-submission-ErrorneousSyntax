@@ -51,3 +51,10 @@ I'll run the same commands when I download your repos.
 - [ ] Push to GitHub.
 - [ ] Sync the changes.
 - [ ] Check submission on GitHub website.
+
+
+## AI Assistance Declaration
+
+I used generative AI tools to support my learning and development process. AI assistance was used for explaining JavaScript concepts, debugging support, test-case brainstorming, and improving clarity in documentation.
+
+All final design decisions, code structure, implementation, tests, and submitted work were reviewed, understood, modified, and verified by me. No AI-generated output was submitted without human review and testing.
