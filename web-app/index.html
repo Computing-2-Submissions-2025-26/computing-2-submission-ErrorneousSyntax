@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Naval Command</title>
-  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="default.css">
 </head>
 
 <body>
@@ -12,31 +14,102 @@
       <span>NAVAL COMMAND</span>
     </div>
 
-    <button id="restart-btn">Restart</button>
+    <button id="restart-btn">RESTART</button>
   </header>
 
   <main>
-    <section id="setup" class="screen active">
-      <h1>SETUP</h1>
+    <!-- MENU -->
+    <section id="menu" class="screen active">
+      <div class="menu-buttons">
+        <button class="menu-btn" data-mode="random">PLAY AGAINST SIMPLE COMPUTER</button>
+        <button class="menu-btn" data-mode="hunt">PLAY AGAINST HUNT/TARGET FSM</button>
+        <button class="menu-btn" data-mode="probability">PLAY AGAINST PROBABILITY DENSITY MAP</button>
+      </div>
+    </section>
 
+   <!-- SETUP -->
+<section id="setup" class="screen">
+  <button id="exit-btn">EXIT TO MENU</button>
+
+  <h1>SETUP</h1>
+
+  <div class="setup-layout">
+    <div class="setup-controls">
       <p id="status">Place your fleet to begin.</p>
+      <p>Drag and place ships</p>
+      <p>OR</p>
+      <button id="random-place-btn">RANDOM PLACE</button>
+      <button id="rotate-btn">ROTATE</button>
+    </div>
 
-      <div class="controls">
-        <button id="random-place-btn">Random Place</button>
-        <button id="rotate-btn">Rotate</button>
-        <button id="start-btn">Start Game</button>
+    <div>
+      <div id="player-board" class="grid setup-grid"></div>
+
+      <div class="ship-dock">
+        <div class="ship-row">
+          <span>CARRIER</span>
+          <div class="ship carrier"></div>
+        </div>
+
+        <div class="ship-row">
+          <span>BATTLESHIP</span>
+          <div class="ship battleship"></div>
+        </div>
+
+        <div class="ship-row">
+          <span>CRUISER</span>
+          <div class="ship cruiser"></div>
+        </div>
+
+        <div class="ship-row">
+          <span>SUBMARINE</span>
+          <div class="ship submarine"></div>
+        </div>
+
+        <div class="ship-row">
+          <span>DESTROYER</span>
+          <div class="ship destroyer"></div>
+        </div>
+      </div>
+    </div>
+
+    <button id="start-btn" class="ready-button">READY</button>
+  </div>
+</section>
+
+<!-- PLAYING -->
+<section id="playing" class="screen">
+  <h1>ROUND <span id="round-number">1</span></h1>
+
+  <div class="play-layout">
+    <div>
+      <h2>DEFENDING</h2>
+      <div id="defence-board" class="grid"></div>
+    </div>
+
+    <div class="fleet-column">
+      <div class="fleet-panel friendly">
+        <h2>FRIENDLY FLEET</h2>
       </div>
 
-      <div class="battle-layout">
-        <div>
-          <h2>YOUR BOARD</h2>
-          <div id="player-board" class="grid"></div>
-        </div>
+      <div class="fleet-panel opposition">
+        <h2>OPPOSITION FLEET</h2>
+      </div>
+    </div>
 
-        <div>
-          <h2>ENEMY BOARD</h2>
-          <div id="computer-board" class="grid"></div>
-        </div>
+    <div>
+      <h2>FIRING</h2>
+      <div id="computer-board" class="grid"></div>
+    </div>
+  </div>
+</section>
+
+    <!-- GAME OVER -->
+    <section id="game-over" class="screen">
+      <div class="game-over-message">
+        <h1>GAME OVER</h1>
+        <h2 id="winner-text">YOU WIN</h2>
+        <button id="game-over-menu-btn">RETURN TO MENU</button>
       </div>
     </section>
   </main>

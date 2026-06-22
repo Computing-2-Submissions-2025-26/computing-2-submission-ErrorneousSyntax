@@ -549,7 +549,7 @@ Battleship.switchTurn = function (state) {
 
 
 
-/**
+/**         
  * Checks whether either player has lost all ships.
  *
  * If all ships in a fleet are sunk, returns a new state with

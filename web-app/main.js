@@ -169,10 +169,13 @@ const playerBoardEl = document.getElementById("player-board");
 const computerBoardEl = document.getElementById("computer-board");
 const statusEl = document.getElementById("status");
 
+const defenceBoardEl = document.getElementById("defence-board");
+
 const randomPlaceBtn = document.getElementById("random-place-btn");
 const rotateBtn = document.getElementById("rotate-btn");
 const startBtn = document.getElementById("start-btn");
 const restartBtn = document.getElementById("restart-btn");
+
 
 
 
@@ -238,6 +241,7 @@ function handleStartClick(){
     }
 
     state = Battleship.startGame(state)
+    showScreen("playing");
 
     render()
 }
@@ -258,17 +262,60 @@ function handlePlayerShot(row, col){
     }
     
     state = Battleship.handlePlayerShot(state, { row: row, col: col });  
-    if (state.phase===Battleship.PHASE.GAME_OVER){
-        render()
-        return
+        if (state.phase===Battleship.PHASE.GAME_OVER){
+            clearAllGrids();
+        showScreen("game-over");
+
+        const playerWon = state.winner === "player";
+
+        document.getElementById("winner-text").textContent = playerWon
+            ? "YOU WIN"
+            : "YOU LOSE";
+
+        return;
     }
 
     state = Battleship.handleComputerTurn(state)
     render()
 }
 
+function getPlayerDisplayBoard() {
+    return state.playerBoard.map(function (row, rowIndex) {
+        return row.map(function (cell, colIndex) {
+            const shotCell = state.computerShots[rowIndex][colIndex];
+
+            if (shotCell !== Battleship.CELL.EMPTY) {
+                return shotCell;
+            }
+
+            return cell;
+        });
+    });
+}
+
+function showScreen(screenId) {
+  document.querySelectorAll(".screen").forEach(screen => {
+    screen.classList.remove("active");
+  });
+
+  document.getElementById(screenId).classList.add("active");
+}
 
 
+document.getElementById("exit-btn").addEventListener("click", () => {
+  showScreen("menu");
+});
+
+document.getElementById("game-over-menu-btn").addEventListener("click", () => {
+    state = Battleship.createInitialGameState();
+    state.phase = Battleship.PHASE.MENU;
+
+    selectedShipIndex = 0;
+    orientation = Battleship.ORIENTATION.HORIZONTAL;
+
+    clearAllGrids();
+    render();
+});
 //-------------------- INITIAL RENDER --------------------
 
 function renderBoard(container, board, mode) {
@@ -312,72 +359,71 @@ function renderBoard(container, board, mode) {
     }
 }
 
+
 /*
     Redraws the visible game every time state changes
     Reads state --> Updates BOM
 */
 function render() {
-    let playerMode;
-    let computerMode;
+    if (state.phase === Battleship.PHASE.MENU) {
+        showScreen("menu");
+        return;
+    }
 
     if (state.phase === Battleship.PHASE.SETUP) {
-        playerMode = "setup";
-    } else {
-        playerMode = "none";
-    }
+        showScreen("setup");
 
-    if (
-        state.phase === Battleship.PHASE.PLAYING &&
-        state.turn === "player"
-    ) {
-        computerMode = "shoot"; // What the clicks on the comptuer board does
-    } else {
-        computerMode = "none";
-    }
+        renderBoard(playerBoardEl, getPlayerDisplayBoard(), "setup");
 
-    renderBoard(playerBoardEl, state.computerShots, playerMode);
-    renderBoard(computerBoardEl, state.playerShots, computerMode);
-
-    if (state.phase === Battleship.PHASE.MENU) {
-        statusEl.textContent = "Place your fleet to begin.";
-    } 
-    else if (state.phase === Battleship.PHASE.SETUP) {
         const ship = state.playerFleet[selectedShipIndex];
 
         if (ship) {
             statusEl.textContent = `Place ${ship.name} (${ship.length}) - ${orientation}`;
-        } 
-        else {
+        } else {
             statusEl.textContent = "All ships placed. Start game.";
         }
-    } 
-    else if (state.phase === Battleship.PHASE.PLAYING) {
-        if (state.turn === "player") {
-            statusEl.textContent = "Your turn.";
-        } 
-        else {
-            statusEl.textContent = "Computer turn.";
+
+        return;
+    }
+
+    if (state.phase === Battleship.PHASE.PLAYING) {
+        showScreen("playing");
+
+        renderBoard(defenceBoardEl, getPlayerDisplayBoard(), "none");
+        renderBoard(computerBoardEl, state.playerShots, "shoot");
+
+        if (statusEl) {
+            if (state.turn === "player") {
+                statusEl.textContent = "Your turn.";
+            } else {
+                statusEl.textContent = "Computer turn.";
+            }
         }
-    } 
-    else if (state.phase === Battleship.PHASE.GAME_OVER) {
-        if (state.winner === "player") {
-            statusEl.textContent = "You win.";
-        } 
-        else {
-            statusEl.textContent = "Computer wins.";
-        }
+
+        return;
+    }
+
+    if (state.phase === Battleship.PHASE.GAME_OVER) {
+        showScreen("game-over");
+
+        const playerWon = state.winner === "player";
+        document.getElementById("winner-text").textContent = playerWon
+            ? "YOU WIN"
+            : "YOU LOSE";
+
+        return;
     }
 }
 
 //Functions for visualising placement:
 function previewShip(row,col){
+    clearPreview()
     const ship = state.playerFleet[selectedShipIndex] //remember selectedshipindex is a global variabel
     if (!ship){ // ignore if all ships placed
         return 
     }
-    if (Battleship.canPlaceShip(state.playerBoard,state.playerFleet[selectedShipIndex],row,col,orientation)){
+    const canPlace = Battleship.canPlaceShip(state.playerBoard,ship,{ row: row, col: col },orientation)
 
-    }
     const cells = Battleship.getShipCells({row:row,col:col},ship,orientation)//orientation also global variable
     // for (let boardRow=0;boardRow<Battleship.BOARD_SIZE;boardRow++){
     //     for (let boardCol=0;boardCol<Battleship.BOARD_SIZE;boardCol++){
@@ -391,20 +437,34 @@ function previewShip(row,col){
         const cellEl = playerBoardEl.querySelector(selector); //querySelector finds the first DOM with the required criteria
 
         if (cellEl) {
-            cellEl.classList.add("preview");
+            if (canPlace) {
+                cellEl.classList.add("preview-valid");
+            } else {
+                cellEl.classList.add("preview-invalid");
+            }
         }
     }
 }
 
 function clearPreview() {
-    const previewCells = document.querySelectorAll(".preview");
+    const previewCells = document.querySelectorAll(".preview-valid, .preview-invalid");
 
     for (const cell of previewCells) {
-        cell.classList.remove("preview");
+        cell.classList.remove("preview-valid");
+        cell.classList.remove("preview-invalid");
     }
 }
 
+function endGame(playerWon) {
+  document.getElementById("winner-text").textContent = playerWon ? "YOU WIN" : "YOU LOSE";
+  showScreen("game-over");
+}
 
+function clearAllGrids() {
+    playerBoardEl.innerHTML = "";
+    computerBoardEl.innerHTML = "";
+    defenceBoardEl.innerHTML = "";
+}
 
 //-------------------- EVENT LISTENERS --------------------
 document.addEventListener("keydown", handleKeyDown); // Accessibility -> for keyboard clicks
@@ -414,8 +474,24 @@ startBtn.addEventListener("click", handleStartClick);
 restartBtn.addEventListener("click", handleRestartClick);
 
 
+document.querySelectorAll(".menu-btn").forEach(button => {
+  button.addEventListener("click", () => {
+    state.mode = button.dataset.mode;
+    state.phase = Battleship.PHASE.SETUP;
+
+    selectedShipIndex = 0;
+    orientation = Battleship.ORIENTATION.HORIZONTAL;
+
+    showScreen("setup");
+    render();
+  });
+});
+
+
+
 
 //-------------------- START GAME UI --------------------
 
-state.phase = Battleship.PHASE.SETUP;
+state.phase = Battleship.PHASE.MENU;
+showScreen("menu");
 render();
