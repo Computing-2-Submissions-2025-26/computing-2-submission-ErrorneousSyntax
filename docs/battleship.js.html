@@ -29,7 +29,7 @@
 <nav >
     
     
-    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Battleship.html">Battleship</a><ul class='methods'><li data-type='method'><a href="Battleship.html#.areAllShipsSunk">areAllShipsSunk</a></li><li data-type='method'><a href="Battleship.html#.canPlaceShip">canPlaceShip</a></li><li data-type='method'><a href="Battleship.html#.cellIsInisideBoard">cellIsInisideBoard</a></li><li data-type='method'><a href="Battleship.html#.checkGameOver">checkGameOver</a></li><li data-type='method'><a href="Battleship.html#.chooseRandomShot">chooseRandomShot</a></li><li data-type='method'><a href="Battleship.html#.createEmptyBoard">createEmptyBoard</a></li><li data-type='method'><a href="Battleship.html#.createInitialFleet">createInitialFleet</a></li><li data-type='method'><a href="Battleship.html#.createInitialGameState">createInitialGameState</a></li><li data-type='method'><a href="Battleship.html#.createShip">createShip</a></li><li data-type='method'><a href="Battleship.html#.findShipAtCell">findShipAtCell</a></li><li data-type='method'><a href="Battleship.html#.getAdjacentCells">getAdjacentCells</a></li><li data-type='method'><a href="Battleship.html#.getAllCells">getAllCells</a></li><li data-type='method'><a href="Battleship.html#.getAvailableShots">getAvailableShots</a></li><li data-type='method'><a href="Battleship.html#.getCell">getCell</a></li><li data-type='method'><a href="Battleship.html#.getShipCells">getShipCells</a></li><li data-type='method'><a href="Battleship.html#.handleComputerTurn">handleComputerTurn</a></li><li data-type='method'><a href="Battleship.html#.handlePlayerShot">handlePlayerShot</a></li><li data-type='method'><a href="Battleship.html#.hasAlreadyBeenShot">hasAlreadyBeenShot</a></li><li data-type='method'><a href="Battleship.html#.isShipHit">isShipHit</a></li><li data-type='method'><a href="Battleship.html#.isShipSunk">isShipSunk</a></li><li data-type='method'><a href="Battleship.html#.markShot">markShot</a></li><li data-type='method'><a href="Battleship.html#.placeFleetRandomly">placeFleetRandomly</a></li><li data-type='method'><a href="Battleship.html#.placeShip">placeShip</a></li><li data-type='method'><a href="Battleship.html#.resolveShot">resolveShot</a></li><li data-type='method'><a href="Battleship.html#.setCell">setCell</a></li><li data-type='method'><a href="Battleship.html#.startGame">startGame</a></li><li data-type='method'><a href="Battleship.html#.switchTurn">switchTurn</a></li></ul></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="Battleship.html">Battleship</a><ul class='methods'><li data-type='method'><a href="Battleship.html#.areAllShipsSunk">areAllShipsSunk</a></li><li data-type='method'><a href="Battleship.html#.canPlaceShip">canPlaceShip</a></li><li data-type='method'><a href="Battleship.html#.cellIsInisideBoard">cellIsInisideBoard</a></li><li data-type='method'><a href="Battleship.html#.checkGameOver">checkGameOver</a></li><li data-type='method'><a href="Battleship.html#.createEmptyBoard">createEmptyBoard</a></li><li data-type='method'><a href="Battleship.html#.createInitialFleet">createInitialFleet</a></li><li data-type='method'><a href="Battleship.html#.createInitialGameState">createInitialGameState</a></li><li data-type='method'><a href="Battleship.html#.createShip">createShip</a></li><li data-type='method'><a href="Battleship.html#.findShipAtCell">findShipAtCell</a></li><li data-type='method'><a href="Battleship.html#.getAdjacentCells">getAdjacentCells</a></li><li data-type='method'><a href="Battleship.html#.getAllCells">getAllCells</a></li><li data-type='method'><a href="Battleship.html#.getCell">getCell</a></li><li data-type='method'><a href="Battleship.html#.getShipCells">getShipCells</a></li><li data-type='method'><a href="Battleship.html#.handleComputerTurn">handleComputerTurn</a></li><li data-type='method'><a href="Battleship.html#.handlePlayerShot">handlePlayerShot</a></li><li data-type='method'><a href="Battleship.html#.hasAlreadyBeenShot">hasAlreadyBeenShot</a></li><li data-type='method'><a href="Battleship.html#.isShipHit">isShipHit</a></li><li data-type='method'><a href="Battleship.html#.isShipSunk">isShipSunk</a></li><li data-type='method'><a href="Battleship.html#.markShot">markShot</a></li><li data-type='method'><a href="Battleship.html#.placeFleetRandomly">placeFleetRandomly</a></li><li data-type='method'><a href="Battleship.html#.placeShip">placeShip</a></li><li data-type='method'><a href="Battleship.html#.resolveShot">resolveShot</a></li><li data-type='method'><a href="Battleship.html#.setCell">setCell</a></li><li data-type='method'><a href="Battleship.html#.startGame">startGame</a></li><li data-type='method'><a href="Battleship.html#.switchTurn">switchTurn</a></li></ul></li><li><a href="ComputerLogic.html">ComputerLogic</a><ul class='methods'><li data-type='method'><a href="ComputerLogic.html#.chooseRandomShot">chooseRandomShot</a></li><li data-type='method'><a href="ComputerLogic.html#.getAvailableShots">getAvailableShots</a></li></ul></li></ul>
     
 </nav>
 
@@ -666,13 +666,12 @@ Battleship.handlePlayerShot = function(state, cell){
  *
  * @memberof Battleship
  * @param {Object} state  Current game state.
+ * @param {{row: number, col: number}} cell Cell selected by the computer logic.
  * @returns {Object} Updated game state.
  */
-Battleship.handleComputerTurn = function(state){
+Battleship.handleComputerTurn = function(state, cell){
   //check if its the computer turn
-  if (state.turn === "computer"){
-    //choose target -------------------------- UPDATE DEPENDING ON WHICH COMPUTER THE PLAY IS AGAINST
-    const cell=Battleship.chooseRandomShot(state.computerShots)
+  if (state.turn === "computer" &amp;&amp; cell){
     //call resolve shot
     const res= Battleship.resolveShot(
       state.playerBoard,
@@ -727,77 +726,12 @@ Battleship.startGame = function (state) {
   }
 };
 
-
-
-
-//----------------------- RANDOM AI -----------------------
-
-
-/**
- * Finds available cells that havent been shot
- *
- * @memberof Battleship
- * @param {string[][]} shotsBoard  The shots board
- * @returns {string[][]} Board with available shots
- */
-Battleship.getAvailableShots = function(shotsBoard){
-  const availableShots = []
-
-  for (let row=0; row &lt;shotsBoard.length; row++){
-    for (let col = 0; col&lt;shotsBoard[row].length; col++){
-      if (Battleship.getCell(shotsBoard,row,col) === Battleship.CELL.EMPTY){
-        availableShots.push({row:row,col:col})
-      }
-    }
-  }
-  return availableShots
-}
-
-
-
-/**
- * for the computer to choose random cells on the board that are available
- * to shoot
- *
- * @memberof Battleship
- *
- * @param {string[][]} shotsBoard  The shots board
- * @returns {{row: number, col: number}} The cell targeted by the random computer 
- */
-Battleship.chooseRandomShot = function(shotsBoard){
-  const legalCells = Battleship.getAvailableShots (shotsBoard)
-  const index = Math.floor(Math.random()*legalCells.length)
-  return legalCells[index]
-}
-
-
-
-//----------------------- HUNT/TARGET LOGIC -----------------------
-
-
-// createAIMemory()
-// chooseHuntTargetShot(shotsBoard, aiMemory)
-// huntMode(shotsBoard)
-// targetMode(shotsBoard, aiMemory)
-// updateAIMemory(aiMemory, shotResult)
-
-
-//----------------------- HEATMAP LOGIC -----------------------
-
-
-// createEmptyHeatmap()
-// generateHeatmap(shotsBoard, remainingShips)
-// getAllPossiblePlacements(shipLength)
-// isValidHeatmapPlacement(placement, shotsBoard)
-// scorePlacement(placement, shotsBoard)
-// normaliseHeatmap(heatmap)
-
-
 //----------------------- EXPORT FUNCTIONS -----------------------
 
 
 // export functions needed by main.js / UI layer
-export default Battleship;</code></pre>
+export default Battleship;
+</code></pre>
         </article>
     </section>
 
@@ -811,7 +745,7 @@ export default Battleship;</code></pre>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Jun 22 2026 22:28:58 GMT+0100 (British Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Mon Jun 22 2026 23:26:11 GMT+0100 (British Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>

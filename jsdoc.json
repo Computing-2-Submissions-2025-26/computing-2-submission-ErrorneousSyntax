@@ -4,7 +4,8 @@
     },
     "source": {
         "include": [
-            "web-app/battleship.js"
+            "web-app/battleship.js",
+            "web-app/computerlogic.js"
         ],
         "includePattern": "\\.js$",
         "excludePattern": "(node_modules/|docs)"

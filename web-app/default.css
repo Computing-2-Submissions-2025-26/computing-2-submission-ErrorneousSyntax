@@ -1,4 +1,5 @@
 :root {
+  /* Colour variables so the theme can be changed from one place */
   --navy: #081522;
   --gold: #c9a84c;
   --red: #e05c6a;
@@ -9,6 +10,7 @@
 }
 
 * {
+  /* Makes padding count inside an elements width instead of adding onto it */
   box-sizing: border-box;
 }
 
@@ -57,6 +59,7 @@ header {
 }
 
 #restart-btn.visible {
+  /* JS adds visible depending on which screen the player is on */
   display: block;
 }
 
@@ -91,6 +94,7 @@ button {
 
 button:focus-visible,
 [draggable="true"]:focus-visible {
+  /* Only shows the strong outline when navigating with keyboard */
   outline: 3px solid white;
   outline-offset: 3px;
 }
@@ -163,6 +167,7 @@ button:disabled {
 
 .setup-layout {
   display: grid;
+  /* controls | game grid | ready button */
   grid-template-columns: 260px max-content 260px;
   justify-content: center;
   align-items: center;
@@ -221,6 +226,7 @@ button:disabled {
 
 .cell.empty {
   background: var(--cell);
+  /* inset keeps the line inside the cell */
   box-shadow: inset 0 0 0 1px rgba(111, 165, 220, 0.28);
 }
 .cell.ship {
@@ -242,6 +248,7 @@ button:disabled {
 }
 
 .cell.miss::after {
+  /* ::after draws the white miss dot without extra HTML */
   content: "";
   position: absolute;
   inset: 35%;
@@ -251,6 +258,7 @@ button:disabled {
 
 .cell.hit::after,
 .cell.sunk::after {
+  /* Same idea as the miss dot but this draws an X */
   content: "×";
   color: white;
   font-size: 30px;
@@ -301,6 +309,7 @@ button:disabled {
   padding: 4px 6px;
   height: 24px;
   background-image: repeating-linear-gradient(
+    /* Repeated blocks make a basic ship shape without an image */
     to right,
     var(--red) 0 16px,
     transparent 16px 25px
@@ -351,6 +360,7 @@ button:disabled {
 
 .play-layout {
   display: grid;
+  /* defending grid | fleet panels | firing grid */
   grid-template-columns: max-content 220px max-content;
   justify-content: center;
   align-items: start;
@@ -370,7 +380,8 @@ button:disabled {
 .fleet-column {
   display: grid;
   gap: 28px;
-  padding-top: 80px;
+  /* Centres both fleet boxes against the height of the boards */
+  align-self: center;
 }
 
 .fleet-panel {
@@ -391,6 +402,7 @@ button:disabled {
 
 .fleet-row {
   display: grid;
+  /* Ship name takes spare room, health number stays at the end */
   grid-template-columns: 1fr auto;
   gap: 6px 12px;
   margin: 8px 0;
@@ -403,6 +415,7 @@ button:disabled {
 }
 
 .fleet-health {
+  /* -1 means stretch to the final grid line */
   grid-column: 1 / -1;
 }
 
@@ -420,6 +433,7 @@ button:disabled {
   border-radius: 4px;
   background: #3c4650;
   overflow: hidden;
+  /* Hides the coloured inner bar when it gets wider than this box */
 }
 
 .fleet-health span {
@@ -433,10 +447,12 @@ button:disabled {
 }
 
 .recent-shot {
+  /* Class is briefly added in main.js to the newest shot */
   animation: shot-pulse 0.75s ease-out;
 }
 
 @keyframes shot-pulse {
+  /* Starts smaller with a white ring, then goes back to normal */
   0% {
     transform: scale(0.55);
     box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.8);
@@ -472,6 +488,7 @@ button:disabled {
 /* RESPONSIVE */
 
 @media (max-width: 1000px) {
+  /* Stack the layout and shrink cells when the browser is narrow */
   body {
     padding: 18px;
   }
@@ -514,6 +531,7 @@ button:disabled {
 
 .grid {
   display: grid;
+  /* repeat saves writing 42px ten seperate times */
   grid-template-columns: repeat(10, 42px);
   grid-template-rows: repeat(10, 42px);
   gap: 4px;
@@ -531,6 +549,7 @@ button:disabled {
 }
 
 .cell:not(:disabled):hover {
+  /* :not means only cells which can be clicked get the hover effect */
   filter: brightness(1.35);
 }
 

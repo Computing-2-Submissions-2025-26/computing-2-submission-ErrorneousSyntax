@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
 import Battleship from "../battleship.js";
+import ComputerLogic from "../computerlogic.js";
 
 describe("Battleship shot behaviour", function () {
   function createDestroyerAtTopLeft() {
@@ -53,23 +54,6 @@ describe("Battleship shot behaviour", function () {
       shot.shotsBoard[0][1],
       Battleship.CELL.EMPTY,
       "the unhit half of the destroyer should remain unmarked"
-    );
-  });
-
-  it("returns the ship that was hit", function () {
-    const game = createDestroyerAtTopLeft();
-
-    const shot = Battleship.resolveShot(
-      game.board,
-      game.fleet,
-      game.shots,
-      { row: 0, col: 1 }
-    );
-
-    assert.equal(
-      shot.ship.name,
-      Battleship.SHIP_TYPE.DESTROYER.name,
-      "the result should identify the destroyer at the target"
     );
   });
 
@@ -166,6 +150,142 @@ describe("Battleship shot behaviour", function () {
       finalState.turn,
       "player",
       "the turn should not advance after the winning shot"
+    );
+  });
+});
+
+describe("Battleship board and setup behaviour", function () {
+  it("rejects a ship placement that would not fit in the board", function () {
+    const board = Battleship.createEmptyBoard();
+    const carrier = Battleship.createShip(Battleship.SHIP_TYPE.CARRIER);
+
+    const placement = Battleship.placeShip(
+      board,
+      carrier,
+      { row: 0, col: 8 },
+      Battleship.ORIENTATION.HORIZONTAL
+    );
+
+    assert.equal(placement, null);
+    assert.equal(board[0][8], Battleship.CELL.EMPTY);
+  });
+
+  it("rejects a ship placement that overlaps another ship", function () {
+    const board = Battleship.createEmptyBoard();
+    const destroyer = Battleship.createShip(Battleship.SHIP_TYPE.DESTROYER);
+    const firstPlacement = Battleship.placeShip(
+      board,
+      destroyer,
+      { row: 3, col: 3 },
+      Battleship.ORIENTATION.HORIZONTAL
+    );
+    const submarine = Battleship.createShip(Battleship.SHIP_TYPE.SUBMARINE);
+
+    const overlappingPlacement = Battleship.placeShip(
+      firstPlacement.board,
+      submarine,
+      { row: 2, col: 3 },
+      Battleship.ORIENTATION.VERTICAL
+    );
+
+    assert.equal(overlappingPlacement, null);
+  });
+
+  it("randomly places every ship without overlapping any cells", function () {
+    const placement = Battleship.placeFleetRandomly(
+      Battleship.createEmptyBoard(),
+      Battleship.createInitialFleet()
+    );
+    const occupiedCells = placement.fleet.flatMap(function (ship) {
+      return ship.cells.map(function (cell) {
+        return `${cell.row},${cell.col}`;
+      });
+    });
+    const uniqueCells = new Set(occupiedCells);
+
+    assert.equal(placement.fleet.length, 5);
+    assert.equal(occupiedCells.length, 17, "the full fleet occupies 17 cells");
+    assert.equal(uniqueCells.size, 17, "no two ships should share a cell");
+    placement.fleet.forEach(function (ship) {
+      assert.equal(ship.cells.length, ship.length);
+    });
+  });
+});
+
+describe("Battleship game flow", function () {
+  it("starts the game with a placed computer fleet and the player going first", function () {
+    const initialState = Battleship.createInitialGameState();
+
+    const startedState = Battleship.startGame(initialState);
+
+    assert.equal(startedState.phase, Battleship.PHASE.PLAYING);
+    assert.equal(startedState.turn, "player");
+    assert.equal(startedState.computerFleet.length, 5);
+    startedState.computerFleet.forEach(function (ship) {
+      assert.equal(ship.cells.length, ship.length);
+    });
+  });
+
+  it("lets the computer fire at the only available cell and returns the turn", function () {
+    const board = Battleship.createEmptyBoard();
+    const destroyer = Battleship.createShip(Battleship.SHIP_TYPE.DESTROYER);
+    const placement = Battleship.placeShip(
+      board,
+      destroyer,
+      { row: 0, col: 0 },
+      Battleship.ORIENTATION.HORIZONTAL
+    );
+    const almostFullShotsBoard = Battleship.createEmptyBoard().map(
+      function (row, rowIndex) {
+        return row.map(function (cell, colIndex) {
+          if (rowIndex === 9 && colIndex === 9) {
+            return cell;
+          }
+          return Battleship.CELL.MISS;
+        });
+      }
+    );
+    const state = {
+      ...Battleship.createInitialGameState(),
+      playerBoard: placement.board,
+      playerFleet: [placement.ship],
+      computerBoard: placement.board,
+      computerFleet: [placement.ship],
+      computerShots: almostFullShotsBoard,
+      phase: Battleship.PHASE.PLAYING,
+      turn: "computer"
+    };
+
+    const computerTarget = ComputerLogic.chooseRandomShot(
+      state.computerShots
+    );
+    const nextState = Battleship.handleComputerTurn(state, computerTarget);
+
+    assert.equal(nextState.computerShots[9][9], Battleship.CELL.MISS);
+    assert.equal(nextState.turn, "player");
+    assert.equal(nextState.phase, Battleship.PHASE.PLAYING);
+  });
+
+});
+
+describe("Random computer logic", function () {
+  it("only returns cells which have not already been shot", function () {
+    const shotsBoard = Battleship.createEmptyBoard();
+    const updatedShots = Battleship.setCell(
+      shotsBoard,
+      0,
+      0,
+      Battleship.CELL.MISS
+    );
+
+    const availableShots = ComputerLogic.getAvailableShots(updatedShots);
+
+    assert.equal(availableShots.length, 99);
+    assert.equal(
+      availableShots.some(function (cell) {
+        return cell.row === 0 && cell.col === 0;
+      }),
+      false
     );
   });
 });

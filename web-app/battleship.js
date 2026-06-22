@@ -619,13 +619,12 @@ Battleship.handlePlayerShot = function(state, cell){
  *
  * @memberof Battleship
  * @param {Object} state  Current game state.
+ * @param {{row: number, col: number}} cell Cell selected by the computer logic.
  * @returns {Object} Updated game state.
  */
-Battleship.handleComputerTurn = function(state){
+Battleship.handleComputerTurn = function(state, cell){
   //check if its the computer turn
-  if (state.turn === "computer"){
-    //choose target -------------------------- UPDATE DEPENDING ON WHICH COMPUTER THE PLAY IS AGAINST
-    const cell=Battleship.chooseRandomShot(state.computerShots)
+  if (state.turn === "computer" && cell){
     //call resolve shot
     const res= Battleship.resolveShot(
       state.playerBoard,
@@ -679,72 +678,6 @@ Battleship.startGame = function (state) {
     turn: "player"
   }
 };
-
-
-
-
-//----------------------- RANDOM AI -----------------------
-
-
-/**
- * Finds available cells that havent been shot
- *
- * @memberof Battleship
- * @param {string[][]} shotsBoard  The shots board
- * @returns {string[][]} Board with available shots
- */
-Battleship.getAvailableShots = function(shotsBoard){
-  const availableShots = []
-
-  for (let row=0; row <shotsBoard.length; row++){
-    for (let col = 0; col<shotsBoard[row].length; col++){
-      if (Battleship.getCell(shotsBoard,row,col) === Battleship.CELL.EMPTY){
-        availableShots.push({row:row,col:col})
-      }
-    }
-  }
-  return availableShots
-}
-
-
-
-/**
- * for the computer to choose random cells on the board that are available
- * to shoot
- *
- * @memberof Battleship
- *
- * @param {string[][]} shotsBoard  The shots board
- * @returns {{row: number, col: number}} The cell targeted by the random computer 
- */
-Battleship.chooseRandomShot = function(shotsBoard){
-  const legalCells = Battleship.getAvailableShots (shotsBoard)
-  const index = Math.floor(Math.random()*legalCells.length)
-  return legalCells[index]
-}
-
-
-
-//----------------------- HUNT/TARGET LOGIC -----------------------
-
-
-// createAIMemory()
-// chooseHuntTargetShot(shotsBoard, aiMemory)
-// huntMode(shotsBoard)
-// targetMode(shotsBoard, aiMemory)
-// updateAIMemory(aiMemory, shotResult)
-
-
-//----------------------- HEATMAP LOGIC -----------------------
-
-
-// createEmptyHeatmap()
-// generateHeatmap(shotsBoard, remainingShips)
-// getAllPossiblePlacements(shipLength)
-// isValidHeatmapPlacement(placement, shotsBoard)
-// scorePlacement(placement, shotsBoard)
-// normaliseHeatmap(heatmap)
-
 
 //----------------------- EXPORT FUNCTIONS -----------------------
 
