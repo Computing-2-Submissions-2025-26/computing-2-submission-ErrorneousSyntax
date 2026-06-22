@@ -3,8 +3,9 @@
   --gold: #c9a84c;
   --red: #e05c6a;
   --blue: #6fa5dc;
-  --cell: #f4f4f4;
+  --cell: #173653;
   --dark-cell: #1e3a5a;
+  --green: #67c587;
 }
 
 * {
@@ -47,6 +48,16 @@ header {
 
 #restart-btn {
   display: none;
+  background: transparent;
+  color: var(--gold);
+  border: 2px solid var(--gold);
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-size: 16px;
+}
+
+#restart-btn.visible {
+  display: block;
 }
 
 /* SHARED SCREENS */
@@ -76,6 +87,17 @@ h2 {
 button {
   font-family: Georgia, serif;
   cursor: pointer;
+}
+
+button:focus-visible,
+[draggable="true"]:focus-visible {
+  outline: 3px solid white;
+  outline-offset: 3px;
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
 }
 
 /* MENU */
@@ -110,6 +132,17 @@ button {
   background: rgba(201, 168, 76, 0.12);
 }
 
+.menu-btn span {
+  display: block;
+  margin-top: 8px;
+  color: var(--blue);
+  font-size: 14px;
+}
+
+.menu-btn:disabled:hover {
+  background: transparent;
+}
+
 /* SETUP */
 
 #setup {
@@ -138,8 +171,14 @@ button {
 
 .setup-controls {
   text-align: center;
-  font-size: 26px;
-  line-height: 1.6;
+  font-size: 20px;
+  line-height: 1.4;
+}
+
+.error-message {
+  min-height: 24px;
+  color: var(--red);
+  font-size: 17px;
 }
 
 #random-place-btn,
@@ -165,6 +204,11 @@ button {
   padding: 20px 60px;
 }
 
+#start-btn:disabled {
+  border-color: #666;
+  color: #888;
+}
+
 /* GRIDS */
 
 
@@ -177,9 +221,10 @@ button {
 
 .cell.empty {
   background: var(--cell);
+  box-shadow: inset 0 0 0 1px rgba(111, 165, 220, 0.28);
 }
 .cell.ship {
-  background: #777;
+  background: var(--blue);
 }
 
 .cell.hit {
@@ -187,11 +232,29 @@ button {
 }
 
 .cell.sunk {
-  background: #111;
+  background: #37131a;
+  box-shadow: inset 0 0 0 3px var(--red);
 }
 
 .cell.miss {
+  position: relative;
+  background: var(--dark-cell);
+}
+
+.cell.miss::after {
+  content: "";
+  position: absolute;
+  inset: 35%;
+  border-radius: 50%;
   background: white;
+}
+
+.cell.hit::after,
+.cell.sunk::after {
+  content: "×";
+  color: white;
+  font-size: 30px;
+  line-height: 1;
 }
 
 .cell.preview-valid {
@@ -219,6 +282,17 @@ button {
   grid-template-columns: 110px max-content;
   align-items: center;
   gap: 12px;
+  padding: 4px;
+  border-radius: 5px;
+}
+
+.ship-row.selected {
+  background: rgba(111, 165, 220, 0.14);
+}
+
+.ship-row.placed {
+  opacity: 0.42;
+  text-decoration: line-through;
 }
 
 .ship {
@@ -233,6 +307,15 @@ button {
   );
   background-origin: content-box;
   background-clip: content-box;
+  cursor: grab;
+}
+
+.ship:active {
+  cursor: grabbing;
+}
+
+.ship-row.placed .ship {
+  cursor: default;
 }
 
 .carrier {
@@ -255,7 +338,15 @@ button {
 /* PLAYING */
 
 #playing h1 {
-  margin-top: 10px;
+  margin: 10px 0 8px;
+}
+
+.battle-status {
+  min-height: 28px;
+  margin: 0 0 20px;
+  color: white;
+  font-size: 19px;
+  text-align: center;
 }
 
 .play-layout {
@@ -299,11 +390,20 @@ button {
 }
 
 .fleet-row {
-  display: flex;
-  justify-content: space-between;
-  gap: 18px;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 6px 12px;
   margin: 8px 0;
   text-transform: uppercase;
+}
+
+.fleet-row.sunk {
+  opacity: 0.45;
+  text-decoration: line-through;
+}
+
+.fleet-health {
+  grid-column: 1 / -1;
 }
 
 .friendly .fleet-row {
@@ -315,30 +415,35 @@ button {
 }
 
 .fleet-health {
-  display: block;
   height: 6px;
   margin-top: 6px;
-  background-image: repeating-linear-gradient(
-    to right,
-    #d9d9d9 0 6px,
-    transparent 6px 11px
-  );
+  border-radius: 4px;
+  background: #3c4650;
+  overflow: hidden;
 }
 
-.health-5 {
-  width: 55px;
+.fleet-health span {
+  display: block;
+  height: 100%;
+  background: var(--green);
 }
 
-.health-4 {
-  width: 44px;
+.opposition .fleet-health span {
+  background: var(--red);
 }
 
-.health-3 {
-  width: 33px;
+.recent-shot {
+  animation: shot-pulse 0.75s ease-out;
 }
 
-.health-2 {
-  width: 22px;
+@keyframes shot-pulse {
+  0% {
+    transform: scale(0.55);
+    box-shadow: 0 0 0 8px rgba(255, 255, 255, 0.8);
+  }
+  100% {
+    transform: scale(1);
+  }
 }
 
 /* GAME OVER */
@@ -393,6 +498,18 @@ button {
   .menu-btn {
     width: 340px;
   }
+
+  .grid {
+    grid-template-columns: repeat(10, 34px);
+    grid-template-rows: repeat(10, 34px);
+    gap: 3px;
+    padding: 8px;
+  }
+
+  .cell {
+    width: 34px;
+    height: 34px;
+  }
 }
 
 .grid {
@@ -408,7 +525,16 @@ button {
 .cell {
   width: 42px;
   height: 42px;
-  background: #f4f4f4;
-  border: none;
+  background: var(--cell);
+  border: 0;
   border-radius: 8px;
+}
+
+.cell:not(:disabled):hover {
+  filter: brightness(1.35);
+}
+
+.cell:disabled {
+  cursor: default;
+  opacity: 1;
 }

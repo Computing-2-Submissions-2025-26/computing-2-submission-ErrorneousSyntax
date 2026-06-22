@@ -494,4 +494,8 @@ document.querySelectorAll(".menu-btn").forEach(button => {
 
 state.phase = Battleship.PHASE.MENU;
 showScreen("menu");
+<<<<<<< ours
 render();
+=======
+render();
+>>>>>>> theirs

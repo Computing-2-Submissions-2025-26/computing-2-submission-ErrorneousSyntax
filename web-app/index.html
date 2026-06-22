@@ -22,8 +22,14 @@
     <section id="menu" class="screen active">
       <div class="menu-buttons">
         <button class="menu-btn" data-mode="random">PLAY AGAINST SIMPLE COMPUTER</button>
-        <button class="menu-btn" data-mode="hunt">PLAY AGAINST HUNT/TARGET FSM</button>
-        <button class="menu-btn" data-mode="probability">PLAY AGAINST PROBABILITY DENSITY MAP</button>
+        <button class="menu-btn" data-mode="hunt" disabled>
+          PLAY AGAINST HUNT/TARGET FSM
+          <span>COMING SOON</span>
+        </button>
+        <button class="menu-btn" data-mode="probability" disabled>
+          PLAY AGAINST PROBABILITY DENSITY MAP
+          <span>COMING SOON</span>
+        </button>
       </div>
     </section>
 
@@ -35,40 +41,41 @@
 
   <div class="setup-layout">
     <div class="setup-controls">
-      <p id="status">Place your fleet to begin.</p>
-      <p>Drag and place ships</p>
+      <p id="status" aria-live="polite">Place your fleet to begin.</p>
+      <p>Drag a ship onto the grid, or select it and click a cell. Press R to rotate ship.</p>
+      <p id="setup-error" class="error-message" aria-live="assertive"></p>
       <p>OR</p>
       <button id="random-place-btn">RANDOM PLACE</button>
-      <button id="rotate-btn">ROTATE</button>
+      <button id="rotate-btn">ROTATE: HORIZONTAL</button>
     </div>
 
     <div>
-      <div id="player-board" class="grid setup-grid"></div>
+      <div id="player-board" class="grid setup-grid" aria-label="Fleet placement grid"></div>
 
       <div class="ship-dock">
-        <div class="ship-row">
+        <div class="ship-row" data-ship-index="0">
           <span>CARRIER</span>
-          <div class="ship carrier"></div>
+          <div class="ship carrier" draggable="true" tabindex="0" role="button"></div>
         </div>
 
-        <div class="ship-row">
+        <div class="ship-row" data-ship-index="1">
           <span>BATTLESHIP</span>
-          <div class="ship battleship"></div>
+          <div class="ship battleship" draggable="true" tabindex="0" role="button"></div>
         </div>
 
-        <div class="ship-row">
+        <div class="ship-row" data-ship-index="2">
           <span>CRUISER</span>
-          <div class="ship cruiser"></div>
+          <div class="ship cruiser" draggable="true" tabindex="0" role="button"></div>
         </div>
 
-        <div class="ship-row">
+        <div class="ship-row" data-ship-index="3">
           <span>SUBMARINE</span>
-          <div class="ship submarine"></div>
+          <div class="ship submarine" draggable="true" tabindex="0" role="button"></div>
         </div>
 
-        <div class="ship-row">
+        <div class="ship-row" data-ship-index="4">
           <span>DESTROYER</span>
-          <div class="ship destroyer"></div>
+          <div class="ship destroyer" draggable="true" tabindex="0" role="button"></div>
         </div>
       </div>
     </div>
@@ -80,26 +87,29 @@
 <!-- PLAYING -->
 <section id="playing" class="screen">
   <h1>ROUND <span id="round-number">1</span></h1>
+  <p id="battle-status" class="battle-status" aria-live="polite">Your turn. Choose a target.</p>
 
   <div class="play-layout">
     <div>
       <h2>DEFENDING</h2>
-      <div id="defence-board" class="grid"></div>
+      <div id="defence-board" class="grid" aria-label="Your defending grid"></div>
     </div>
 
     <div class="fleet-column">
       <div class="fleet-panel friendly">
         <h2>FRIENDLY FLEET</h2>
+        <div id="friendly-fleet"></div>
       </div>
 
       <div class="fleet-panel opposition">
         <h2>OPPOSITION FLEET</h2>
+        <div id="opposition-fleet"></div>
       </div>
     </div>
 
     <div>
       <h2>FIRING</h2>
-      <div id="computer-board" class="grid"></div>
+      <div id="computer-board" class="grid" aria-label="Enemy targeting grid"></div>
     </div>
   </div>
 </section>
