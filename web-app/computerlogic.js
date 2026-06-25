@@ -122,8 +122,8 @@ ComputerLogic.getTargetShots = function (shotsBoard) {
 /**
  * chooses the hunt/target shot
  *
- * hunt means random
- * target means shoot around a hit
+ * hunt means random shots
+ * target means shoot around a hit from getTrgetShots
  *
  * @memberof ComputerLogic
  * @param {string[][]} shotsBoard board with the computers old shots
