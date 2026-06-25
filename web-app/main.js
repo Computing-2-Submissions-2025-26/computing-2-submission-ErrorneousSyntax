@@ -3,13 +3,13 @@ import ComputerLogic from "./computerlogic.js";
 
 //-------------------- UI STATE --------------------
 
-// Battleship owns the actual game rules, these are just for what the user sees
+// battleship.js handles the rules, this file is mostly the screen stuff
 let state = Battleship.createInitialGameState();
 let selectedShipIndex = 0;
 let orientation = Battleship.ORIENTATION.HORIZONTAL;
 let roundNumber = 1;
 let uiMessage = "";
-// Remembers the most recent shots so only that square does the animation
+// stores the last shots so only that square animates
 let animatedPlayerShot = null;
 let animatedComputerShot = null;
 let computerTurnTimer = null;
@@ -46,7 +46,7 @@ function cellName(cell) {
 }
 
 function showScreen(screenId) {
-    // Hide every screen first, then only show the one we want
+    // hide every screen then show the one needed
     document.querySelectorAll(".screen").forEach(function (screen) {
         screen.classList.remove("active");
     });
@@ -54,7 +54,7 @@ function showScreen(screenId) {
 }
 
 function clearComputerTimer() {
-    // setTimeout returns an ID, we keep it so it can be cancelled on restart
+    // keep the timer id so restart can cancel it
     if (computerTurnTimer !== null) {
         window.clearTimeout(computerTurnTimer);
         computerTurnTimer = null;
@@ -62,7 +62,7 @@ function clearComputerTimer() {
 }
 
 function getPlayerDisplayBoard() {
-    // Combines where the ships are with shots the computer has made
+    // mixes the players ships with the computers shots
     return state.playerBoard.map(function (row, rowIndex) {
         return row.map(function (cell, colIndex) {
             const shotCell = state.computerShots[rowIndex][colIndex];
@@ -76,7 +76,7 @@ function getPlayerDisplayBoard() {
 }
 
 function shotMessage(shotsBoard, fleet, cell, shooter) {
-    // Template strings use ${} to put values inside the sentence
+    // builds the message shown after a shot
     const result = shotsBoard[cell.row][cell.col];
     const position = cellName(cell);
 
@@ -93,7 +93,7 @@ function shotMessage(shotsBoard, fleet, cell, shooter) {
 }
 
 function findNewShot(previousBoard, nextBoard) {
-    // Compares the board before and after the computers turn
+    // finds the new computer shot by comparing boards
     for (let row = 0; row < Battleship.BOARD_SIZE; row++) {
         for (let col = 0; col < Battleship.BOARD_SIZE; col++) {
             if (previousBoard[row][col] === Battleship.CELL.EMPTY &&
@@ -127,7 +127,7 @@ function placeSelectedShip(row, col) {
     }
 
     const updatedFleet = state.playerFleet.map(function (ship, index) {
-        // Only swap out the ship which was just placed
+        // only change the ship that was just placed
         if (index === selectedShipIndex) {
             return result.ship;
         } else {
@@ -135,7 +135,7 @@ function placeSelectedShip(row, col) {
         }
     });
 
-    // ...state copies the old state, then these two values are replaced
+    // copy state but replace the board and fleet
     state = {
         ...state,
         playerBoard: result.board,
@@ -162,7 +162,7 @@ function handleRandomPlaceClick() {
     );
 
     state = {
-        // Keep the rest of state but replace the players board and fleet
+        // keep the other state values but replace the players fleet
         ...state,
         playerBoard: result.board,
         playerFleet: result.fleet
@@ -188,7 +188,7 @@ function handleStartClick() {
 }
 
 function resetToSetup() {
-    // Important if restart is clicked while the computer is waiting to shoot
+    // stops a delayed computer shot from happening after restart
     clearComputerTimer();
     const selectedMode = state.mode || "random";
     // || uses random as a fallback if a mode hasnt been saved
@@ -235,7 +235,7 @@ function handlePlayerShot(row, col) {
         return;
     }
 
-    // Small delay so the computers shot doesnt happen invisibly fast
+    // small delay so the computers shot is actually visible
     computerTurnTimer = window.setTimeout(function () {
         const previousShots = state.computerShots;
         let target = ComputerLogic.chooseRandomShot(state.computerShots);
@@ -246,7 +246,7 @@ function handlePlayerShot(row, col) {
 
         state = Battleship.handleComputerTurn(state, target);
 
-        // Clear our animation before animating the computers new shot
+        // clear the players animation before showing the computers shot
         animatedPlayerShot = null;
         animatedComputerShot = findNewShot(previousShots, state.computerShots);
 
@@ -292,7 +292,7 @@ function previewShip(row, col) {
     );
 
     cells.forEach(function (cell) {
-        // Finds the HTML button with the same row and col
+        // get the matching button on the board
         const selector = `[data-row="${cell.row}"][data-col="${cell.col}"]`;
         const cellEl = playerBoardEl.querySelector(selector);
         if (cellEl) {
@@ -315,7 +315,7 @@ function clearPreview() {
 //-------------------- DRAWING THE UI --------------------
 
 function renderBoard(container, board, mode) {
-    // Boards are rebuilt from the state each render, keeps it fairly simple
+    // redraw board from state each time
     container.innerHTML = "";
 
     for (let row = 0; row < Battleship.BOARD_SIZE; row++) {
@@ -326,7 +326,7 @@ function renderBoard(container, board, mode) {
 
             cell.type = "button";
             cell.classList.add("cell", property);
-            // dataset stores our row and col as data-row / data-col in HTML
+            // store row and col on the button
             cell.dataset.row = row;
             cell.dataset.col = col;
 
@@ -349,7 +349,7 @@ function renderBoard(container, board, mode) {
             } else {
                 animatedShot = animatedComputerShot;
             }
-            // Both boards use this function, mode tells us which shot to animate
+            // mode decides which last shot should animate
             if (animatedShot &&
                 animatedShot.row === row &&
                 animatedShot.col === col) {
@@ -378,7 +378,7 @@ function renderBoard(container, board, mode) {
 
             cell.addEventListener("dragover", function (event) {
                 if (mode === "setup" && selectedShipIndex >= 0) {
-                    // Browser blocks dropping by default, so this allows it
+                    // allow dropping ships onto the grid
                     event.preventDefault();
                     previewShip(row, col);
                 }
@@ -393,7 +393,7 @@ function renderBoard(container, board, mode) {
             });
 
             container.appendChild(cell);
-            // appendChild actually puts the new button onto the page
+            // add the button to the grid
         }
     }
 }
@@ -405,11 +405,11 @@ function renderShipDock() {
         const shipShape = row.querySelector(".ship");
         const isPlaced = ship.cells.length > 0;
 
-        // toggle adds the class if true and removes it if false
+        // toggle keeps placed and selected classes up to date
         row.classList.toggle("placed", isPlaced);
         row.classList.toggle("selected", index === selectedShipIndex);
         shipShape.draggable = !isPlaced;
-        // -1 removes a placed ship from the keyboard tab order
+        // placed ships should not be tabbed to again
         if (isPlaced) {
             shipShape.tabIndex = -1;
             shipShape.setAttribute("aria-label", `${ship.name} placed`);
@@ -424,7 +424,7 @@ function renderShipDock() {
 }
 
 function countShipHits(ship, shotsBoard) {
-    // filter keeps only the cells which have been hit
+    // count the ship cells already hit
     return ship.cells.filter(function (cell) {
         const value = shotsBoard[cell.row][cell.col];
         return value === Battleship.CELL.HIT ||
@@ -433,7 +433,7 @@ function countShipHits(ship, shotsBoard) {
 }
 
 function renderFleetPanel(container, fleet, shotsBoard) {
-    // These rows are made in JS because their health changes every turn
+    // fleet rows change as ships get hit
     container.innerHTML = "";
 
     fleet.forEach(function (ship) {
@@ -458,7 +458,7 @@ function renderFleetPanel(container, fleet, shotsBoard) {
             value.textContent = `${remaining}/${ship.length}`;
         }
         health.className = "fleet-health";
-        // Inline width is useful here as every ships health is different
+        // each ship needs a different health bar width
         healthFill.style.width = `${(remaining / ship.length) * 100}%`;
 
         health.appendChild(healthFill);
@@ -470,7 +470,7 @@ function renderFleetPanel(container, fleet, shotsBoard) {
 }
 
 function render() {
-    // Main render function, reads the phase and draws the correct screen
+    // draw the screen for the current phase
     restartBtn.classList.toggle(
         "visible",
         state.phase === Battleship.PHASE.SETUP ||
@@ -589,7 +589,7 @@ document.querySelectorAll(".ship-row").forEach(function (row) {
 
     shipShape.addEventListener("click", selectShip);
     shipShape.addEventListener("keydown", function (event) {
-        // Makes the fake ship buttons work like normal buttons on keyboard
+        // make the ship div work like a button on keyboard
         if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
             selectShip();
@@ -597,14 +597,14 @@ document.querySelectorAll(".ship-row").forEach(function (row) {
     });
     shipShape.addEventListener("dragstart", function (event) {
         selectShip();
-        // Drag events expect some data to be stored, even though selection does the work
+        // drag needs some data, even though selection does the real work
         event.dataTransfer.setData("text/plain", row.dataset.shipIndex);
     });
 });
 
 document.querySelectorAll(".menu-btn:not(:disabled)")
     .forEach(function (button) {
-        // :not(:disabled) means coming soon buttons dont get a click event
+        // only active menu buttons should start a game
         button.addEventListener("click", function () {
             state = {
                 ...Battleship.createInitialGameState(),
@@ -618,6 +618,6 @@ document.querySelectorAll(".menu-btn:not(:disabled)")
         });
     });
 
-// First draw of the page
+// first draw of the page
 state.phase = Battleship.PHASE.MENU;
 render();

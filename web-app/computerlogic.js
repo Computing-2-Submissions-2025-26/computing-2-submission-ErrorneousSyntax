@@ -1,23 +1,22 @@
 import Battleship from "./battleship.js";
 
 /**
- * Computer logic.
+ * computer logic for picking where to shoot
  *
- * This module only chooses where the computer should shoot.
- * Battleship.js is still responsible for applying the shot.
+ * this file picks the cell, battleship.js actually shoots it
  *
  * @namespace ComputerLogic
  */
 const ComputerLogic = {};
 
-//----------------------- RANDOM AI -----------------------
+//----------------------- RANDOM COMPUTER -----------------------
 
 /**
- * Finds every board cell which has not already been shot.
+ * finds every cell the computer can still shoot
  *
  * @memberof ComputerLogic
- * @param {string[][]} shotsBoard Board containing the computer's previous shots.
- * @returns {Array<{row: number, col: number}>} Cells which can still be targeted.
+ * @param {string[][]} shotsBoard board with the computers old shots
+ * @returns {Array<{row: number, col: number}>} cells still free to shoot
  */
 ComputerLogic.getAvailableShots = function (shotsBoard) {
   const availableShots = [];
@@ -34,11 +33,11 @@ ComputerLogic.getAvailableShots = function (shotsBoard) {
 };
 
 /**
- * Randomly chooses one cell which has not already been shot.
+ * chooses a random shot from the cells still free
  *
  * @memberof ComputerLogic
- * @param {string[][]} shotsBoard Board containing the computer's previous shots.
- * @returns {{row: number, col: number}|null} Chosen cell, or null if none remain.
+ * @param {string[][]} shotsBoard board with the computers old shots
+ * @returns {{row: number, col: number}|null} chosen cell, or null if none left
  */
 ComputerLogic.chooseRandomShot = function (shotsBoard) {
   const availableShots = ComputerLogic.getAvailableShots(shotsBoard);
@@ -51,14 +50,14 @@ ComputerLogic.chooseRandomShot = function (shotsBoard) {
   return availableShots[index];
 };
 
-//----------------------- HUNT/TARGET FSM -------------
+//----------------------- HUNT/TARGET FSM -----------------------
 
 /**
- * Finds cells where the computer has hit a ship but has not sunk it yet.
+ * finds hit cells which have not turned into sunk cells yet
  *
  * @memberof ComputerLogic
- * @param {string[][]} shotsBoard Board containing the computer's previous shots.
- * @returns {Array<{row: number, col: number}>} Hit cells still being followed up.
+ * @param {string[][]} shotsBoard board with the computers old shots
+ * @returns {Array<{row: number, col: number}>} hit cells to look around
  */
 ComputerLogic.getHitCells = function (shotsBoard) {
   const hitCells = [];
@@ -75,25 +74,25 @@ ComputerLogic.getHitCells = function (shotsBoard) {
 };
 
 /**
- * Checks if a cell has not already been shot.
+ * checks if the computer is allowed to shoot this cell
  *
  * @memberof ComputerLogic
- * @param {string[][]} shotsBoard Board containing the computer's previous shots.
- * @param {{row: number, col: number}} cell Cell to check.
- * @returns {boolean} True if the computer can shoot this cell.
+ * @param {string[][]} shotsBoard board with the computers old shots
+ * @param {{row: number, col: number}} cell cell to check
+ * @returns {boolean} true if the cell is empty on the shots board
  */
 ComputerLogic.canShootCell = function (shotsBoard, cell) {
   return shotsBoard[cell.row][cell.col] === Battleship.CELL.EMPTY;
 };
 
 /**
- * Finds empty cells beside the hits the computer already has
+ * finds empty cells beside the hits the computer already has
  *
- * only for Target mode: finding cells around hit cells that are AVAILABLE <==== means it cannot be already a shot/miss cell
+ * target mode uses this to try around a hit before going random again
  *
  * @memberof ComputerLogic
- * @param {string[][]} shotsBoard Board containing the computer's previous shots.
- * @returns {Array<{row: number, col: number}>} Possible target cells.
+ * @param {string[][]} shotsBoard board with the computers old shots
+ * @returns {Array<{row: number, col: number}>} possible cells beside hits
  */
 ComputerLogic.getTargetShots = function (shotsBoard) {
   const hitCells = ComputerLogic.getHitCells(shotsBoard);
@@ -121,14 +120,14 @@ ComputerLogic.getTargetShots = function (shotsBoard) {
 };
 
 /**
- * Shoots around hit targetss
+ * chooses the hunt/target shot
  *
- * HUNT: chooses random cell
- * TARGET: choose an empty cell next to a hit cell
+ * hunt means random
+ * target means shoot around a hit
  *
  * @memberof ComputerLogic
- * @param {string[][]} shotsBoard Board containing the computer's previous shots.
- * @returns {{row: number, col: number}|null} Chosen cell, or null if none remain.
+ * @param {string[][]} shotsBoard board with the computers old shots
+ * @returns {{row: number, col: number}|null} chosen cell, or null if none left
  */
 ComputerLogic.chooseHuntTargetShot = function (shotsBoard) {
   const targetShots = ComputerLogic.getTargetShots(shotsBoard);

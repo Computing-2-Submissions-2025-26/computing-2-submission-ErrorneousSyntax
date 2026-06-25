@@ -1,9 +1,8 @@
 
 /**
- * Core Battleship game logic.
+ * battleship game logic.
  *
- * Contains board creation, ship placement, shot resolution,
- * turn handling, game-over checks, and random computer AI.
+ * holds the board, ships, shots and turn changes.
  *
  * @namespace Battleship
  */
@@ -51,7 +50,7 @@ Battleship.PLAYER_TYPE = {
 
 
 /**
- * Creates a new empty grid of size board_size x board_size
+ * creates a new empty board
  * @memberof Battleship
  * @returns {string[][]} new grid
  */
@@ -68,8 +67,7 @@ Battleship.createEmptyBoard = function (){
 }
 
 /**
- * Defines the name, length and initialises cells and hit cells for 
- * each ship in a fleet 
+ * makes a ship object from the ship type
  * @memberof Battleship
  * @param {Object} shipType
  * @returns {Object} ship
@@ -84,7 +82,7 @@ Battleship.createShip = function (shipType){
 }
 
 /**
- * Initialises the fleet, with consideration for every ship on the board
+ * makes the full fleet
  * @returns {Array} fleet
  * @memberof Battleship
  */
@@ -100,13 +98,11 @@ Battleship.createInitialFleet = function(){
 
 
 /**
- * Creates the full initial state for a new Battleship game.
+ * creates the starting game state.
  *
- * The state object should contain all data needed to run the game:
- * player boards, computer boards, fleets, shot-tracking boards,
- * current phase, current turn, winner, and AI memory.
+ * this has both boards, both fleets, shots, phase and winner.
  * @memberof Battleship
- * @returns {Object} Initial game state.
+ * @returns {Object} starting game state
  */
 Battleship.createInitialGameState = function(){
   return {
@@ -116,7 +112,7 @@ Battleship.createInitialGameState = function(){
     playerFleet: Battleship.createInitialFleet(),
     computerFleet: Battleship.createInitialFleet(),
 
-    /* Grid for shots visualisation */
+    /* boards used to show shots */
     playerShots: Battleship.createEmptyBoard(),
     computerShots: Battleship.createEmptyBoard(),
 
@@ -130,24 +126,23 @@ Battleship.createInitialGameState = function(){
 
 
 /**
- * Checks that selected row and colum is within the boundaries
+ * checks if the row and col are inside the board
  * @memberof Battleship
- * @param {number} row  Row index.
- * @param {number} col  Column index.
- * @returns {boolean} True if the position is inside the board.
+ * @param {number} row row index
+ * @param {number} col column index
+ * @returns {boolean} true if the position is inside the board
  */
 Battleship.cellIsInisideBoard = function(row, col){
   return (row>=0 && row<Battleship.BOARD_SIZE && col >=0 && col < Battleship.BOARD_SIZE)
 }
 
 /**
- * Gets the value stored at a specific board position, and returns
- * null instead of crash if the cell does not exist
+ * gets the value at a board position, or null if outside board
  * @memberof Battleship
- * @param {string[][]} board  The board to read from.
- * @param {number} row Row index.
- * @param {number} col  Column index.
- * @returns {string|null} Cell value if inside board, otherwise null.
+ * @param {string[][]} board board to read from
+ * @param {number} row row index
+ * @param {number} col column index
+ * @returns {string|null} cell value, or null if outside the board
  */
 Battleship.getCell = function(board, row, col){
   if (Battleship.cellIsInisideBoard(row,col) != true){
@@ -157,20 +152,19 @@ Battleship.getCell = function(board, row, col){
 }
 
 /**
- * Sets specific cell on the board to a certain value
+ * sets one cell on the board to a new value
  * @memberof Battleship
- * @param {string[][]} board  The board to read from.
- * @param {number} row Row index.
- * @param {number} col  Column index.
- * @param {string} Cell value to be set to 
- * @returns {string[][]} board New board that has been set.
+ * @param {string[][]} board board to update
+ * @param {number} row row index
+ * @param {number} col column index
+ * @param {string} value value to put in the cell
+ * @returns {string[][]} new board with the cell changed
  */
 Battleship.setCell = function(board,row,col,value){
   if (Battleship.cellIsInisideBoard(row,col) != true){
     return board
   }
-  // Ensuring functional programming paradigms 
-  // ------------------ check w freddie ------------------
+  // using map so the old board is not changed directly
   return board.map(function(currentRow,r){
     return currentRow.map(function(currentCell, c){
       if (r === row && c == col){
@@ -182,10 +176,10 @@ Battleship.setCell = function(board,row,col,value){
 }
 
 /**
- * Returns every cell coordinate on the board.
+ * gets every cell coordinate on the board.
  * @memberof Battleship
- * @param {string[][]} board  Board to inspect.
- * @returns {Array<{row: number, col: number}>} Array of board coordinates. */
+ * @param {string[][]} board board to inspect
+ * @returns {Array<{row: number, col: number}>} board coordinates */
 Battleship.getAllCells = function (board) {
   const arr = []
   // loop through every row
@@ -199,9 +193,9 @@ Battleship.getAllCells = function (board) {
 }
 
 /**
- * Finds the cell id of adjacant cells
+ * finds the adjacent cells
  * @memberof Battleship
- * @param {{ row: number, col: number }} cellPosition  The centre cell.
+ * @param {{ row: number, col: number }} cellPosition the centre cell
  */
 Battleship.getAdjacentCells = function(cellPosition){
   const possibleCells = [
@@ -222,15 +216,14 @@ Battleship.getAdjacentCells = function(cellPosition){
 
 
 /**
- * Finds the board cells occupied by a ship from a starting position.
+ * finds the cells a ship would take up.
  *
- * This function does not modify the board. It only returns the coordinates
- * the ship would occupy based on its length and orientation.
+ * this only works out the positions, it doesnt place the ship.
  * @memberof Battleship
- * @param {{ row: number, col: number }} cellPosition  Starting cell of the ship.
- * @param {{ name: string, length: number }} ship  Ship object containing length.
- * @param {string} orientation  Ship orientation: horizontal or vertical.
- * @returns {Array<{row: number, col: number}>} Array of cells occupied by the ship.
+ * @param {{ row: number, col: number }} cellPosition starting cell of the ship
+ * @param {{ name: string, length: number }} ship ship with its length
+ * @param {string} orientation horizontal or vertical
+ * @returns {Array<{row: number, col: number}>} cells the ship would use
  */
 Battleship.getShipCells = function(cellPosition, ship, orientation){
   const cells = [];
@@ -247,19 +240,19 @@ Battleship.getShipCells = function(cellPosition, ship, orientation){
 }
 
 /**
- * Returns true or false on if a ship can be placed on that cel
+ * checks if a ship can be placed on that cell
  * @memberof Battleship
  * @param {string[][]} board the current board
- * @param {{ name: string, length: number }} ship  Ship object containing length.
- * @param {{ row: number, col: number }} Cell 
+ * @param {{ name: string, length: number }} ship ship to check
+ * @param {{ row: number, col: number }} startCell starting cell
  * 
  * @returns {boolean} if the ship can be placed or not
  */
 Battleship.canPlaceShip = function(board, ship, startCell, orientation){
-  // find the cells the ship would occupy
+  // first find where the ship would go
   const shipCells = Battleship.getShipCells(startCell,ship,orientation)
 
-  //check each cell 
+  // check each cell is free and in the board
   for (const cell of shipCells){
     if (!Battleship.cellIsInisideBoard(cell.row, cell.col) 
       || Battleship.getCell(board,cell.row,cell.col) !== Battleship.CELL.EMPTY){
@@ -270,14 +263,14 @@ Battleship.canPlaceShip = function(board, ship, startCell, orientation){
 }
 
 /**
- * Places a ship on the board if the placement is valid.
- * returns a new board and an updated ship object
+ * places a ship if the position is valid.
+ * returns the new board and updated ship
  * @memberof Battleship
  * @param {string[][]} board  board current
  * @param {Object} ship  ship object to place.
  * @param {{ row: number, col: number }} startCell starting cell
  * @param {string} orientation  horizontal or vertical
- * @returns {{ board: string[][], ship: Object } | null} Updated board and ship, or null if invalid.
+ * @returns {{ board: string[][], ship: Object } | null} new board and ship, or null
  */
 Battleship.placeShip = function (board, ship, startCell, orientation) {
   if (!Battleship.canPlaceShip(board, ship, startCell, orientation)){
@@ -303,27 +296,27 @@ Battleship.placeShip = function (board, ship, startCell, orientation) {
 }
 
 /**
- * Randomly place fleet on the board
+ * randomly places a full fleet on the board
  * @memberof Battleship
  * @param {string[][]} board current board
- * @param {Object} fleet Fleet of ships
+ * @param {Object} fleet fleet of ships
  * @returns {{ board: string[][], fleet: Object[] }} updated board and fleet
  */
 Battleship.placeFleetRandomly = function(board, fleet){
-  // Assign a new board variable and new placedFleet variable
+  // keep track of the board as each ship is added
   let newBoard=board
   const placedFleet = [];
 
-  // Use Math.random to find a starting cell 
+  // try random positions until each ship fits
   for (const ship of fleet){
     let allPlaced = false
     while (allPlaced != true){
-      //Random starting cell:
+      // random starting cell:
       const row = Math.floor(Math.random() * Battleship.BOARD_SIZE);
       const col = Math.floor(Math.random() * Battleship.BOARD_SIZE);
       const startCell = {row, col}
 
-      //Random orientation
+      // random orientation
       const getRandomOrientation = () => {
         const randomNumber = Math.round(Math.random());
 
@@ -357,11 +350,11 @@ Battleship.placeFleetRandomly = function(board, fleet){
 //----------------------- SHOT LOGIC -----------------------
 
 /**
- * Returns true or false on if the ship at the specified cell has been shot
+ * checks if this cell has already been shot
  * @memberof Battleship
  * @param {string[][]} shotsBoard board tracking shots
- * @param {{ row: number, col: number }} cell Targetted cell
- * @returns {Boolean} True if it has been shot
+ * @param {{ row: number, col: number }} cell targeted cell
+ * @returns {Boolean} true if it has been shot
  */
 Battleship.hasAlreadyBeenShot = function(shotsBoard, cell){
   if (shotsBoard[cell.row][cell.col] === Battleship.CELL.EMPTY){
@@ -370,11 +363,11 @@ Battleship.hasAlreadyBeenShot = function(shotsBoard, cell){
   return true 
 }
 /**
- * Determines the class of ship at the target cell
+ * finds the ship at the target cell
  * @memberof Battleship
- * @param {Object[]} fleet Array of ship objects 
- * @param {{ row: number, col: number }} cell Targetted cell
- * @returns {Object[] | undefined} Class of ship
+ * @param {Object[]} fleet array of ship objects
+ * @param {{ row: number, col: number }} cell targeted cell
+ * @returns {Object[] | undefined} ship found at the cell
  */
 Battleship.findShipAtCell = function (fleet, cell){
   for (let ship of fleet){
@@ -389,11 +382,11 @@ Battleship.findShipAtCell = function (fleet, cell){
 
 
 /**
- * Checks if a specific ship is hit
+ * checks if a ship uses this cell
  * @memberof Battleship
- * @param {Object[]} ship Ship being compared
- * @param {{ row: number, col: number }} cell Targetted cell
- * @returns {boolean} True if shots hits the ship 
+ * @param {Object[]} ship ship being checked
+ * @param {{ row: number, col: number }} cell targeted cell
+ * @returns {boolean} true if the cell is part of the ship
  */
 Battleship.isShipHit = function(ship, cell){
   for (let pos of ship.cells){
@@ -405,26 +398,26 @@ Battleship.isShipHit = function(ship, cell){
 }
 
 /**
- * updates shotBoard object to mark cell
+ * marks a shot on the shots board
  * @memberof Battleship
- * @param {string[][]} shotsBoard  Board tracking previous shots.
- * @param {{ row: number, col: number }} cell  Targetted cell.
- * @param {string} result  Shot result: miss, hit, or sunk.
- * @returns {string[][]} Updated shots board.
+ * @param {string[][]} shotsBoard board tracking previous shots
+ * @param {{ row: number, col: number }} cell targeted cell
+ * @param {string} result shot result: miss, hit, or sunk
+ * @returns {string[][]} updated shots board
  */
 Battleship.markShot = function(shotsBoard, cell, result){
   return Battleship.setCell(shotsBoard,cell.row,cell.col,result)
 }
 
 /**
- * Checks if a specific ship is entirely sunk
+ * checks if a ship is fully sunk
  * @memberof Battleship
- * @param {Object[]} ship Ship being compared
+ * @param {Object[]} ship ship being checked
  * @param {string[][]} shotsBoard the current shot board
- * @returns {boolean} True if all cells of the ship are "HIT"
+ * @returns {boolean} true if all ship cells are hit or sunk
  */
 Battleship.isShipSunk = function(ship,shotsBoard){
-  // ***** USE A REDUCE -------------------------------------
+  // count how many ship cells have been hit
   let count = 0
   for (let pos of ship.cells){
     if (shotsBoard[pos.row][pos.col]===Battleship.CELL.HIT
@@ -438,11 +431,11 @@ Battleship.isShipSunk = function(ship,shotsBoard){
 
 
 /**
- * Checks all ships to see if you still in da game 
+ * checks if all ships in a fleet are sunk
  * @memberof Battleship
- * @param {Object[]} fleet The entire fleet
+ * @param {Object[]} fleet the entire fleet
  * @param {string[][]} shotsBoard the current shot board
- * @returns {boolean} True if all cells of the ship are "HIT"
+ * @returns {boolean} true if the whole fleet is sunk
  */
 Battleship.areAllShipsSunk = function(fleet,shotsBoard){
   // let count = 0
@@ -453,7 +446,7 @@ Battleship.areAllShipsSunk = function(fleet,shotsBoard){
   // }
   // return count === fleet.length
 
-  // using .every
+  // every ship needs to be sunk
   return fleet.every(function(ship){
     return Battleship.isShipSunk (ship,shotsBoard)
   })
@@ -461,18 +454,17 @@ Battleship.areAllShipsSunk = function(fleet,shotsBoard){
 
 
 /**
- * Processes a shot against a target board and fleet.
+ * works out what happens when a shot is fired.
  *
- * Determines whether the shot is a miss, hit, or sunk
- * Returns updated shot board data and information about the result
+ * returns miss, hit, sunk or alreadyShot with the updated shots board
  * 
  * @memberof Battleship
  *
- * @param {string[][]} targetBoard  Board containing the opponent's ships.
- * @param {Object[]} targetFleet  Opponent fleet.
- * @param {string[][]} shotsBoard  Board tracking previous shots.
- * @param {{ row: number, col: number }} cell - Target cell.
- * @returns {Object} Shot result data. [shotsBoard][result][ship]
+ * @param {string[][]} targetBoard board with the opponents ships
+ * @param {Object[]} targetFleet opponent fleet
+ * @param {string[][]} shotsBoard board tracking previous shots
+ * @param {{ row: number, col: number }} cell target cell
+ * @returns {Object} shot result data
  */
 Battleship.resolveShot = function(targetBoard, targetFleet, shotsBoard, cell) {
   // already shot case
@@ -483,7 +475,7 @@ Battleship.resolveShot = function(targetBoard, targetFleet, shotsBoard, cell) {
       ship:null
     }
   }
-  const targetCell = Battleship.getCell(targetBoard,cell.row,cell.col) // state of the cell
+  const targetCell = Battleship.getCell(targetBoard,cell.row,cell.col) // whats on the target board
 
   if (targetCell === Battleship.CELL.EMPTY){
     return {
@@ -524,13 +516,13 @@ Battleship.resolveShot = function(targetBoard, targetFleet, shotsBoard, cell) {
 //----------------------- GAME LOGIC -----------------------
 
 /**
- * Switches the active turn between player and computer
+ * switches the active turn between player and computer
  * @memberof Battleship
- * @param {Object} state  Current game state.
- * @returns {Object} Updated game state.
+ * @param {Object} state current game state
+ * @returns {Object} updated game state
  */
 Battleship.switchTurn = function (state) {
-  // Using ... notation to copy everything before
+  // copy the state and just change turn
   if (state.turn === "computer") {
     return {
       ...state,
@@ -550,13 +542,12 @@ Battleship.switchTurn = function (state) {
 
 
 /**         
- * Checks whether either player has lost all ships.
+ * checks whether either player has lost all ships.
  *
- * If all ships in a fleet are sunk, returns a new state with
- * the winner set and the phase changed to GAME_OVER.
+ * if a fleet is sunk, the game goes to GAME_OVER.
  * @memberof Battleship
- * @param {Object} state Current game state.
- * @returns {Object} Updated game state.
+ * @param {Object} state current game state
+ * @returns {Object} updated game state
  */
 Battleship.checkGameOver = function(state){
   const compFleet = state.computerFleet
@@ -580,17 +571,17 @@ Battleship.checkGameOver = function(state){
 }
 
 /**
- * Handles the player's shot against the computer.
+ * handles the players shot against the computer.
  *
  * @memberof Battleship
- * @param {Object} state  Current game state.
- * @param {{ row: number, col: number }} cell  Cell being fired at.
- * @returns {Object} Updated game state.
+ * @param {Object} state current game state
+ * @param {{ row: number, col: number }} cell cell being fired at
+ * @returns {Object} updated game state
  */
 Battleship.handlePlayerShot = function(state, cell){
   //check if its the players turn
   if (state.turn === "player"){
-    //call resolve shot
+    // resolve the shot
     const res= Battleship.resolveShot(
       state.computerBoard,
       state.computerFleet,
@@ -615,17 +606,17 @@ Battleship.handlePlayerShot = function(state, cell){
 
 
 /**
- * Handles the computers shot against the player.
+ * handles the computers shot against the player.
  *
  * @memberof Battleship
- * @param {Object} state  Current game state.
- * @param {{row: number, col: number}} cell Cell selected by the computer logic.
- * @returns {Object} Updated game state.
+ * @param {Object} state current game state
+ * @param {{row: number, col: number}} cell cell picked by computer logic
+ * @returns {Object} updated game state
  */
 Battleship.handleComputerTurn = function(state, cell){
   //check if its the computer turn
   if (state.turn === "computer" && cell){
-    //call resolve shot
+    // resolve the shot
     const res= Battleship.resolveShot(
       state.playerBoard,
       state.playerFleet,
@@ -649,26 +640,17 @@ Battleship.handleComputerTurn = function(state, cell){
 }
 
 /**
- * Starts the game after the player has placed their fleet.
+ * starts the game after the players fleet is placed.
  *
- * Randomly places the computer fleet, sets the phase to PLAYING,
- * and gives the first turn to the player.
+ * the computer fleet gets placed randomly and the player goes first.
  *
  * @memberof Battleship
- * @param {Object} state  Current game state after player setup.
- * @returns {Object} Updated game state ready for play.
+ * @param {Object} state game state after player setup
+ * @returns {Object} state ready for play
  */
 Battleship.startGame = function (state) {
   // randomly place computer fleet on computerBoard
   const computerSide = Battleship.placeFleetRandomly(state.computerBoard,state.computerFleet)
-  /*
-  return new state with:
-  computerBoard updated
-  computerFleet updated
-  phase set to PLAYING
-  turn set to player
-  winner set to null
-  */
   return {
     ...state,
     computerBoard: computerSide.board,
