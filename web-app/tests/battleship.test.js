@@ -289,3 +289,50 @@ describe("Random computer logic", function () {
     );
   });
 });
+
+describe("Hunt target computer logic", function () {
+  it("targets a cell next to a hit", function () {
+    let shotsBoard = Battleship.createEmptyBoard();
+    shotsBoard = Battleship.setCell(
+      shotsBoard,
+      4,
+      4,
+      Battleship.CELL.HIT
+    );
+
+    const target = ComputerLogic.chooseHuntTargetShot(shotsBoard);
+    const validTargets = [
+      { row: 3, col: 4 },
+      { row: 5, col: 4 },
+      { row: 4, col: 3 },
+      { row: 4, col: 5 }
+    ];
+
+    assert.equal(
+      validTargets.some(function (cell) {
+        return cell.row === target.row && cell.col === target.col;
+      }),
+      true,
+      "hunt target mode should shoot beside an existing hit"
+    );
+  });
+
+  it("goes back to a random available shot when there are no hits", function () {
+    let shotsBoard = Battleship.createEmptyBoard();
+    shotsBoard = Battleship.setCell(
+      shotsBoard,
+      0,
+      0,
+      Battleship.CELL.MISS
+    );
+
+    const target = ComputerLogic.chooseHuntTargetShot(shotsBoard);
+
+    assert.notEqual(target, null);
+    assert.equal(
+      shotsBoard[target.row][target.col],
+      Battleship.CELL.EMPTY,
+      "hunt mode should still only choose cells that have not been shot"
+    );
+  });
+});

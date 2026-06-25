@@ -238,7 +238,12 @@ function handlePlayerShot(row, col) {
     // Small delay so the computers shot doesnt happen invisibly fast
     computerTurnTimer = window.setTimeout(function () {
         const previousShots = state.computerShots;
-        const target = ComputerLogic.chooseRandomShot(state.computerShots);
+        let target = ComputerLogic.chooseRandomShot(state.computerShots);
+
+        if (state.mode === Battleship.PLAYER_TYPE.HUNT) {
+            target = ComputerLogic.chooseHuntTargetShot(state.computerShots);
+        }
+
         state = Battleship.handleComputerTurn(state, target);
 
         // Clear our animation before animating the computers new shot

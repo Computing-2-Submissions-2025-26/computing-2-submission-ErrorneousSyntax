@@ -679,8 +679,4 @@ Battleship.startGame = function (state) {
   }
 };
 
-//----------------------- EXPORT FUNCTIONS -----------------------
-
-
-// export functions needed by main.js / UI layer
 export default Battleship;
