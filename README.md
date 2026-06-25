@@ -58,3 +58,17 @@ I'll run the same commands when I download your repos.
 I used generative AI tools to support my learning and development process. AI assistance was used for explaining JavaScript concepts, debugging support, test-case brainstorming, and improving clarity in documentation.
 
 All final design decisions, code structure, implementation, tests, and submitted work were reviewed, understood, modified, and verified by me. No AI-generated output was submitted without human review and testing.
+
+
+# Battleship
+
+This is a browser Battleship game with player setup, random ship placement, turn-based shooting, win detection, and two computer modes: random and hunt/target.
+
+## How to run
+Open `web-app/index.html` in a browser.
+
+## How to test
+Run:
+
+npm install
+npx mocha web-app/tests/battleship.test.js

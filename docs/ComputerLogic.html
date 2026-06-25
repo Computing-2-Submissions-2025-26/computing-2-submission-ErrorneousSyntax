@@ -75,9 +75,8 @@
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Computer logic.</p>
-<p>This module only chooses where the computer should shoot.
-Battleship.js is still responsible for applying the shot.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>computer logic for picking where to shoot</p>
+<p>this file picks the cell, battleship.js actually shoots it</p></li></ul></dd>
     
 
     
@@ -183,13 +182,13 @@ Battleship.js is still responsible for applying the shot.</p></li></ul></dd>
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Checks if a cell has not already been shot.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>checks if the computer is allowed to shoot this cell</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line85">line 85</a>
+        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line84">line 84</a>
     </li></ul></dd>
     
 
@@ -278,7 +277,7 @@ Battleship.js is still responsible for applying the shot.</p></li></ul></dd>
 
             
 
-            <td class="description last"><p>Board containing the computer's previous shots.</p></td>
+            <td class="description last"><p>board with the computers old shots</p></td>
         </tr>
 
     
@@ -302,7 +301,7 @@ Battleship.js is still responsible for applying the shot.</p></li></ul></dd>
 
             
 
-            <td class="description last"><p>Cell to check.</p></td>
+            <td class="description last"><p>cell to check</p></td>
         </tr>
 
     
@@ -328,7 +327,7 @@ Battleship.js is still responsible for applying the shot.</p></li></ul></dd>
 
         
 <div class="param-desc">
-    <p>True if the computer can shoot this cell.</p>
+    <p>true if the cell is empty on the shots board</p>
 </div>
 
 
@@ -365,15 +364,15 @@ Battleship.js is still responsible for applying the shot.</p></li></ul></dd>
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Shoots around hit targetss</p>
-<p>HUNT: chooses random cell
-TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>chooses the hunt/target shot</p>
+<p>hunt means random
+target means shoot around a hit</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line133">line 133</a>
+        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line132">line 132</a>
     </li></ul></dd>
     
 
@@ -462,7 +461,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 
             
 
-            <td class="description last"><p>Board containing the computer's previous shots.</p></td>
+            <td class="description last"><p>board with the computers old shots</p></td>
         </tr>
 
     
@@ -488,7 +487,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 
         
 <div class="param-desc">
-    <p>Chosen cell, or null if none remain.</p>
+    <p>chosen cell, or null if none left</p>
 </div>
 
 
@@ -528,13 +527,13 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Randomly chooses one cell which has not already been shot.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>chooses a random shot from the cells still free</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line43">line 43</a>
+        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line42">line 42</a>
     </li></ul></dd>
     
 
@@ -623,7 +622,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 
             
 
-            <td class="description last"><p>Board containing the computer's previous shots.</p></td>
+            <td class="description last"><p>board with the computers old shots</p></td>
         </tr>
 
     
@@ -649,7 +648,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 
         
 <div class="param-desc">
-    <p>Chosen cell, or null if none remain.</p>
+    <p>chosen cell, or null if none left</p>
 </div>
 
 
@@ -689,13 +688,13 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Finds every board cell which has not already been shot.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>finds every cell the computer can still shoot</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line22">line 22</a>
+        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line21">line 21</a>
     </li></ul></dd>
     
 
@@ -784,7 +783,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 
             
 
-            <td class="description last"><p>Board containing the computer's previous shots.</p></td>
+            <td class="description last"><p>board with the computers old shots</p></td>
         </tr>
 
     
@@ -810,7 +809,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 
         
 <div class="param-desc">
-    <p>Cells which can still be targeted.</p>
+    <p>cells still free to shoot</p>
 </div>
 
 
@@ -847,13 +846,13 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Finds cells where the computer has hit a ship but has not sunk it yet.</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>finds hit cells which have not turned into sunk cells yet</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line63">line 63</a>
+        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line62">line 62</a>
     </li></ul></dd>
     
 
@@ -942,7 +941,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 
             
 
-            <td class="description last"><p>Board containing the computer's previous shots.</p></td>
+            <td class="description last"><p>board with the computers old shots</p></td>
         </tr>
 
     
@@ -968,7 +967,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 
         
 <div class="param-desc">
-    <p>Hit cells still being followed up.</p>
+    <p>hit cells to look around</p>
 </div>
 
 
@@ -1005,14 +1004,14 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 <dl class="details">
     
     <dt class="tag-description">Description:</dt>
-    <dd class="tag-description"><ul class="dummy"><li><p>Finds empty cells beside the hits the computer already has</p>
-<p>only for Target mode: finding cells around hit cells that are AVAILABLE &lt;==== means it cannot be already a shot/miss cell</p></li></ul></dd>
+    <dd class="tag-description"><ul class="dummy"><li><p>finds empty cells beside the hits the computer already has</p>
+<p>target mode uses this to try around a hit before going random again</p></li></ul></dd>
     
 
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line98">line 98</a>
+        <a href="computerlogic.js.html">computerlogic.js</a>, <a href="computerlogic.js.html#line97">line 97</a>
     </li></ul></dd>
     
 
@@ -1101,7 +1100,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 
             
 
-            <td class="description last"><p>Board containing the computer's previous shots.</p></td>
+            <td class="description last"><p>board with the computers old shots</p></td>
         </tr>
 
     
@@ -1127,7 +1126,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 
         
 <div class="param-desc">
-    <p>Possible target cells.</p>
+    <p>possible cells beside hits</p>
 </div>
 
 
@@ -1169,7 +1168,7 @@ TARGET: choose an empty cell next to a hit cell</p></li></ul></dd>
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Thu Jun 25 2026 15:31:21 GMT+0100 (British Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 4.0.5</a> on Thu Jun 25 2026 15:36:18 GMT+0100 (British Summer Time) using the <a href="https://github.com/clenemt/docdash">docdash</a> theme.
 </footer>
 
 <script>prettyPrint();</script>
